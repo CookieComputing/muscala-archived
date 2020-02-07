@@ -50,4 +50,66 @@ class NoteTest extends FunSuite {
       .map { case (actualNote: Note, expectedNote: Note)
       => assert(actualNote == expectedNote)}
   }
+
+  test("Natural letter notes are natural") {
+    val naturalNotes = List(Note.A, Note.B, Note.C, Note.D, Note.E, Note.F, Note.G)
+      naturalNotes
+      .map {_.isNatural}
+      .map {assert(_)}
+
+    naturalNotes
+      .map {_.isAccidental}
+      .map {bool => assert(!bool)}
+  }
+
+  test("Accidental letter notes are accidental") {
+    val accidentalNotes = List(Note("A#"), Note("Bb"), Note("C#"), Note("Db"), Note("D#"),
+      Note("Eb"), Note("F#"), Note("Gb"), Note("G#"), Note("Ab"))
+
+    accidentalNotes
+      .map {_.get}
+      .map {_.isAccidental}
+      .map {assert(_)}
+
+    accidentalNotes
+      .map {_.get}
+      .map {_.isNatural}
+      .map {bool => assert(!bool)}
+  }
+
+  test("Natural notes raised or flatted can become accidental") {
+    List(Note.A, Note.C, Note.D, Note.F, Note.G)
+      .map {_.sharp}
+      .map {_.isAccidental}
+      .map {assert(_)}
+
+    List(Note.A, Note.B, Note.D, Note.E, Note.G)
+      .map {_.flat}
+      .map {_.isAccidental}
+      .map {assert(_)}
+
+    List(Note.B, Note.E)
+      .map {_.sharp}
+      .map {_.isNatural}
+      .map {assert(_)}
+
+    List(Note.C, Note.F)
+      .map {_.flat}
+      .map {_.isNatural}
+      .map {assert(_)}
+  }
+
+  test("Accidental notes raised or flatted can become natural") {
+    List(Note("A#"), Note("C#"), Note("D#"), Note("F#"), Note("G#"))
+      .map {_.get}
+      .map {_.sharp}
+      .map {_.isNatural}
+      .map {assert(_)}
+
+    List(Note("Ab"), Note("Bb"), Note("Db"), Note("Eb"), Note("Gb"))
+      .map {_.get}
+      .map {_.flat}
+      .map {_.isNatural}
+      .map {assert(_)}
+  }
 }

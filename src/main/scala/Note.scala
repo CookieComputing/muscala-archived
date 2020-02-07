@@ -7,6 +7,7 @@
  *                 and as such lower notes are not supported.
  */
 case class Note private(noteRank: Int) {
+  private var flatted = false
 
   /**
    * Generates a note that is raised by one half step.
@@ -14,6 +15,7 @@ case class Note private(noteRank: Int) {
    * @return a note that is one half step higher than this note
    */
   def sharp: Note = {
+    flatted = false
     Note(noteRank + 1)
   }
 
@@ -24,8 +26,23 @@ case class Note private(noteRank: Int) {
    *         the note is "C-0", return it
    */
   def flat: Note = {
+    flatted = true
     if (noteRank == 0) this else Note(noteRank - 1)
   }
+
+  /**
+   * Determine if this is an accidental note
+   * @return a boolean indicating if the node is accidental
+   */
+  def isAccidental: Boolean = !isNatural
+
+  /**
+   * Determine if this is a natural note.
+   * @return a boolean indicating if the node is natural
+   */
+  def isNatural: Boolean = List(0, 2, 4, 5, 7, 9, 11).contains(noteRank % Note.halfStepsInOctave)
+  // this is an unfortunate consequence of how the ranking system is currently implemented.
+  // perhaps this can be refactored once an implementation for scales is in place?
 
   /**
    * @return the letter representing the note. If the note is an accidental, it will return a flat if the note
