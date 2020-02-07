@@ -1,13 +1,13 @@
 /**
  * The cornerstone of the library. Notes can be used independently to represent a single music note,
- * or in conjunction with other notes to represent chords.
+ * or in conjunction with other notes to represent chords. When testing for equality, you may need to consider using
+ * enharmonic() instead of using the equality checker since notes may differ in being recently sharped or flatted.
  *
  * @param noteRank A number representing the distance that this note is from "C-0" in terms of the number of half steps.
  *                 The note "C-0" is chosen to be the fundamental "lowest" note,
  *                 and as such lower notes are not supported.
  */
-case class Note private(noteRank: Int) {
-  private var flatted = false
+case class Note private(noteRank: Int, private val flatted: Boolean = false) {
 
   /**
    * Generates a note that is raised by one half step.
@@ -15,7 +15,6 @@ case class Note private(noteRank: Int) {
    * @return a note that is one half step higher than this note
    */
   def sharp: Note = {
-    flatted = false
     Note(noteRank + 1)
   }
 
@@ -26,8 +25,7 @@ case class Note private(noteRank: Int) {
    *         the note is "C-0", return it
    */
   def flat: Note = {
-    flatted = true
-    if (noteRank == 0) this else Note(noteRank - 1)
+    if (noteRank == 0) Note(0, flatted = true) else Note(noteRank - 1, flatted = true)
   }
 
   /**
@@ -45,11 +43,21 @@ case class Note private(noteRank: Int) {
   // perhaps this can be refactored once an implementation for scales is in place?
 
   /**
+   * Determines if two notes are enharmonic. This should be used for testing half step equality as opposed to
+   * using the equality operator, since "Ab" and "G#" may not necessarily be equivalent.
+   * @param other the other note to compare
+   * @return whether or not the two notes are enharmonic.
+   */
+  def enharmonic(other: Note): Boolean = noteRank == other.noteRank
+
+  /**
    * @return the letter representing the note. If the note is an accidental, it will return a flat if the note
    *         was recently flatted, otherwise the note will be sharp.
    */
   override def toString: String = {
-    "foo"
+    if (isNatural) Note.intToNoteMapping.getOrElse(noteRank % Note.halfStepsInOctave, "")
+    else if (flatted) s"${Note(noteRank).sharp}b"
+    else s"${Note(noteRank).flat}#"
   }
 
   /**
@@ -57,13 +65,26 @@ case class Note private(noteRank: Int) {
    *         it will return a flat if the note was recently flatted, otherwise the note will be sharp.
    */
   def toStringWithOctave: String = {
-    "foo"
+    s"${this.toString}-${noteRank / Note.halfStepsInOctave}"
   }
 }
 
 object Note {
   private val halfStepsInOctave = 12
-  private val noteRegex = "^[A-G][#|b]+$".r
+  private val naturalNoteRegex = "^[A-G]$".r
+  private val accidentalNoteRegex = "^[A-G][#|b]+$".r
+
+  // The note ranking starts from 0 to 12, with "C" as the starting note and increasing in half steps
+  private val naturalNoteMapping = Map[String, Int](
+    "C" -> 0,
+    "D" -> 2,
+    "E" -> 4,
+    "F" -> 5,
+    "G" -> 7,
+    "A" -> 9,
+    "B" -> 11
+  )
+  private val intToNoteMapping = naturalNoteMapping.map(_.swap)
 
   /**
    * A constructor which returns a note in the 4th octave.
@@ -84,10 +105,22 @@ object Note {
    * @return The note with the given octave
    */
   def apply(note: String, octave: Int): Option[Note] = {
-    for {
-      noteRank <- noteToInt(note)
-      octaveMultiplier <- octaveToInt(octave)
-    } yield (Note(noteRank + halfStepsInOctave * octaveMultiplier))
+    note match {
+      case naturalNoteRegex() =>
+        for {
+          noteRank <- noteToInt(note)
+          octaveMultiplier <- octaveToInt(octave)
+        } yield Note(noteRank + halfStepsInOctave * octaveMultiplier)
+      // Drops the letter in the string
+      case accidentalNoteRegex() => note.drop(1).foldLeft(Note(note.take(1), octave)) {
+        (acc: Option[Note], accidental: Char) =>
+          (acc, accidental) match {
+            case (Some(acc), '#') => Some(acc.sharp)
+            case (Some(acc), 'b') => Some(acc.flat)
+          }
+      }
+      case _ => None
+    }
   }
 
   // Convenience wrappers for natural notes
@@ -107,15 +140,9 @@ object Note {
 
   // Returns the modulo 12 mapping of a note, where "C" is 0 and "B" is 10.
   private def noteToInt(note: String): Option[Int] = note match {
-    case "C" => Some(0)
-    case "D" => Some(2)
-    case "E" => Some(4)
-    case "F" => Some(5)
-    case "G" => Some(7)
-    case "A" => Some(9)
-    case "B" => Some(11)
+    case naturalNoteRegex() => naturalNoteMapping.get(note)
     // Drops the letter in the string
-    case noteRegex() => note.drop(1).foldLeft(noteToInt(note.take(1))) {
+    case accidentalNoteRegex() => note.drop(1).foldLeft(noteToInt(note.take(1))) {
       (acc: Option[Int], accidental: Char) =>
         (acc, accidental) match {
           case (Some(acc), '#') => Some(acc + 1)
