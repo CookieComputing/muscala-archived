@@ -1,3 +1,5 @@
+package note
+
 /**
  * The cornerstone of the library. Notes can be used independently to represent a single music note,
  * or in conjunction with other notes to represent chords. When testing for equality, you may need to consider using
@@ -72,6 +74,17 @@ case class Note private(noteRank: Int) {
     else if (isFlat && other.isSharp) other.noteRank == noteRank
     else false
 
+  /**
+   * Creates a half step movement from this note
+   * @return a half step movement with this note
+   */
+  def halfStep: HalfStepMovement = HalfStepMovement(this)
+
+  /**
+   * Creates a whole step movement from this note
+   * @return a whole step movement with this note
+   */
+  def wholeStep: WholeStepMovement = WholeStepMovement(this)
 
   private def noteRankConverted = noteRank % Note.noteRanksInOctave
 
@@ -146,6 +159,7 @@ object Note {
           (acc, accidental) match {
             case (Some(acc), '#') => Some(acc.sharp)
             case (Some(acc), 'b') => Some(acc.flat)
+            case _ => None
           }
       }
       case _ => None
@@ -176,6 +190,7 @@ object Note {
         (acc, accidental) match {
           case (Some(acc), '#') => Some(acc + 1)
           case (Some(acc), 'b') => Some(acc - 1)
+          case _ => None
         }
     }
     case _ => None

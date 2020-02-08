@@ -1,6 +1,7 @@
+import note.Note
 import org.scalatest.FunSuite
 
-// Unit tests for the Note case class, as well as examples of how to use the class
+// Unit tests for the note.Note case class, as well as examples of how to use the class
 class NoteTest extends FunSuite {
   test("Notes with letters in apply() should work") {
     assert(List("A", "B", "C", "D", "E", "F", "G")
@@ -63,7 +64,7 @@ class NoteTest extends FunSuite {
       => assert(actualNote != expectedNote)}
   }
 
-  test("Multiple accidentals are allowed in Note apply() method") {
+  test("Multiple accidentals are allowed in note.Note apply() method") {
     assert(List(Note("C#"), Note("C##"), Note("C#b#b")).count(_.isDefined) == 3)
   }
 
