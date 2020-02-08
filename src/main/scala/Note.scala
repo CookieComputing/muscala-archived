@@ -49,6 +49,18 @@ case class Note private(noteRank: Int) {
   // perhaps this can be refactored once an implementation for scales is in place?
 
   /**
+   * Determine if this is a flat note.
+   * @return a boolean indicating if the node is flat
+   */
+  def isFlat: Boolean = Note.flatSet.contains(noteRankConverted)
+
+  /**
+   * Determine if this is a sharp note.
+   * @return a boolean indicating if the note is sharp
+   */
+  def isSharp: Boolean = Note.sharpSet.contains(noteRankConverted)
+
+  /**
    * Determines if two notes are enharmonic. This should be used for testing half step equality as opposed to
    * using the equality operator, since "Ab" and "G#" may not necessarily be equivalent.
    * @param other the other note to compare
@@ -60,9 +72,6 @@ case class Note private(noteRank: Int) {
     else if (isFlat && other.isSharp) other.noteRank == noteRank
     else false
 
-  private def isFlat: Boolean = Note.flatSet.contains(noteRankConverted)
-
-  private def isSharp: Boolean = Note.sharpSet.contains(noteRankConverted)
 
   private def noteRankConverted = noteRank % Note.noteRanksInOctave
 
