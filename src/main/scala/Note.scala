@@ -7,7 +7,7 @@
  *                 The note "C-0" is chosen to be the fundamental "lowest" note,
  *                 and as such lower notes are not supported.
  */
-case class Note private(noteRank: Int, private val flatted: Boolean = false) {
+case class Note private(noteRank: Int) {
 
   /**
    * Generates a note that is raised by one half step.
@@ -15,7 +15,10 @@ case class Note private(noteRank: Int, private val flatted: Boolean = false) {
    * @return a note that is one half step higher than this note
    */
   def sharp: Note = {
-    Note(noteRank + 1)
+    // We "skip" the flatted note rank to jump to the next note
+    if (isSharp)
+      Note(noteRank + 2)
+    else Note(noteRank + 1)
   }
 
   /**
@@ -25,7 +28,10 @@ case class Note private(noteRank: Int, private val flatted: Boolean = false) {
    *         the note is "C-0", return it
    */
   def flat: Note = {
-    if (noteRank == 0) Note(0, flatted = true) else Note(noteRank - 1, flatted = true)
+    // We "skip" the sharped note rank to jump to the next note
+    if (noteRank == 0) Note(0)
+    else if (isFlat) Note(noteRank - 2)
+    else Note(noteRank - 1)
   }
 
   /**
@@ -38,7 +44,7 @@ case class Note private(noteRank: Int, private val flatted: Boolean = false) {
    * Determine if this is a natural note.
    * @return a boolean indicating if the node is natural
    */
-  def isNatural: Boolean = List(0, 2, 4, 5, 7, 9, 11).contains(noteRank % Note.halfStepsInOctave)
+  def isNatural: Boolean = Note.naturalSet.contains(noteRankConverted)
   // this is an unfortunate consequence of how the ranking system is currently implemented.
   // perhaps this can be refactored once an implementation for scales is in place?
 
@@ -48,15 +54,27 @@ case class Note private(noteRank: Int, private val flatted: Boolean = false) {
    * @param other the other note to compare
    * @return whether or not the two notes are enharmonic.
    */
-  def enharmonic(other: Note): Boolean = noteRank == other.noteRank
+  def enharmonic(other: Note): Boolean =
+    if (isNatural) noteRank == other.noteRank
+    else if (isSharp && other.isFlat) noteRank + 1 == other.noteRank
+    else if (isFlat && other.isSharp) other.noteRank == noteRank
+    else false
+
+  private def isFlat: Boolean = Note.flatSet.contains(noteRankConverted)
+
+  private def isSharp: Boolean = Note.sharpSet.contains(noteRankConverted)
+
+  private def noteRankConverted = noteRank % Note.noteRanksInOctave
+
+  private def noteRankOctave: Int = noteRank / Note.noteRanksInOctave
 
   /**
    * @return the letter representing the note. If the note is an accidental, it will return a flat if the note
    *         was recently flatted, otherwise the note will be sharp.
    */
   override def toString: String = {
-    if (isNatural) Note.intToNoteMapping.getOrElse(noteRank % Note.halfStepsInOctave, "")
-    else if (flatted) s"${Note(noteRank).sharp}b"
+    if (isNatural) Note.intToNoteMapping.getOrElse(noteRankConverted, "")
+    else if (isFlat) s"${Note(noteRank).sharp}b"
     else s"${Note(noteRank).flat}#"
   }
 
@@ -64,27 +82,29 @@ case class Note private(noteRank: Int, private val flatted: Boolean = false) {
    * @return A string in the form of "[letter]-[octave]". If the note is an accidental,
    *         it will return a flat if the note was recently flatted, otherwise the note will be sharp.
    */
-  def toStringWithOctave: String = {
-    s"${this.toString}-${noteRank / Note.halfStepsInOctave}"
-  }
+  def toStringWithOctave: String = s"${this.toString}-$noteRankOctave"
 }
 
 object Note {
-  private val halfStepsInOctave = 12
+  private val noteRanksInOctave = 17
   private val naturalNoteRegex = "^[A-G]$".r
   private val accidentalNoteRegex = "^[A-G][#|b]+$".r
 
   // The note ranking starts from 0 to 12, with "C" as the starting note and increasing in half steps
   private val naturalNoteMapping = Map[String, Int](
     "C" -> 0,
-    "D" -> 2,
-    "E" -> 4,
-    "F" -> 5,
-    "G" -> 7,
-    "A" -> 9,
-    "B" -> 11
+    "D" -> 3,
+    "E" -> 6,
+    "F" -> 7,
+    "G" -> 10,
+    "A" -> 13,
+    "B" -> 16
   )
   private val intToNoteMapping = naturalNoteMapping.map(_.swap)
+  // Hacky values determined by the ordering of the set: Refer to the wiki for more details
+  private val naturalSet = Set(0, 3, 6, 7, 10, 13, 16)
+  private val sharpSet = Set(1, 4, 8, 11, 14)
+  private val flatSet = Set(2, 5, 9, 12, 15)
 
   /**
    * A constructor which returns a note in the 4th octave.
@@ -110,7 +130,7 @@ object Note {
         for {
           noteRank <- noteToInt(note)
           octaveMultiplier <- octaveToInt(octave)
-        } yield Note(noteRank + halfStepsInOctave * octaveMultiplier)
+        } yield Note(noteRank + Note.noteRanksInOctave * octaveMultiplier)
       // Drops the letter in the string
       case accidentalNoteRegex() => note.drop(1).foldLeft(Note(note.take(1), octave)) {
         (acc: Option[Note], accidental: Char) =>

@@ -12,7 +12,7 @@ class NoteTest extends FunSuite {
     List("A", "B", "C", "D", "E", "F", "G")
       .map { x => (Note(x).get, Note(x).get) }
       .map { case (actualNote: Note, expectedNote: Note)
-      => assert(actualNote enharmonic expectedNote)}
+      => assert(actualNote == expectedNote)}
   }
 
   test ("Flats and sharps should cancel each other out") {
@@ -21,10 +21,28 @@ class NoteTest extends FunSuite {
       (Note.C.flat.sharp.flat.sharp, Note.C),
       (Note.D.flat.flat.sharp.sharp, Note.D))
       .map { case (actualNote: Note, expectedNote: Note)
-      => assert(actualNote enharmonic  expectedNote) }
+      => assert(actualNote ==  expectedNote) }
   }
 
-  test("Enharmonic notes should be the same") {
+  test("An sharped/flat note should not equal the original note") {
+    List((Note.A.sharp, Note.A),
+      (Note.A.flat, Note.A),
+      (Note.B.sharp, Note.B),
+      (Note.B.flat, Note.B),
+      (Note.C.sharp, Note.C),
+      (Note.C.flat, Note.C),
+      (Note.D.sharp, Note.D),
+      (Note.D.flat, Note.D),
+      (Note.E.sharp, Note.E),
+      (Note.E.flat, Note.E),
+      (Note.F.sharp, Note.F),
+      (Note.F.flat, Note.F),
+      (Note.G.sharp, Note.G),
+      (Note.G.flat, Note.G)
+    )
+  }
+
+  test("Enharmonic notes should be enharmonic, but not equal") {
     // Since C is the start of the octave, we do not check B# and C (or vice versa) since they are on opposite edges
     // of the octave
     List((Note.C.sharp, Note.D.flat),
@@ -35,6 +53,14 @@ class NoteTest extends FunSuite {
       (Note.A.sharp, Note.B.flat))
       .map { case (actualNote: Note, expectedNote: Note)
       => assert(actualNote enharmonic expectedNote)}
+
+    List((Note.C.sharp, Note.D.flat),
+      (Note.D.sharp, Note.E.flat),
+      (Note.F.sharp, Note.G.flat),
+      (Note.G.sharp, Note.A.flat),
+      (Note.A.sharp, Note.B.flat))
+      .map { case (actualNote: Note, expectedNote: Note)
+      => assert(actualNote != expectedNote)}
   }
 
   test("Multiple accidentals are allowed in Note apply() method") {
@@ -48,7 +74,7 @@ class NoteTest extends FunSuite {
       (Note("F#b#b#b"), Note("F")))
       .map {tuple => (tuple._1.get, tuple._2.get)}
       .map { case (actualNote: Note, expectedNote: Note)
-      => assert(actualNote enharmonic expectedNote)}
+      => assert(actualNote == expectedNote)}
   }
 
   test("Natural letter notes are natural") {
