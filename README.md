@@ -1,4 +1,4 @@
-# Muscala
+# Muscala &middot; ![Build Status](https://travis-ci.com/CookieComputing/muscala.svg?branch=master) &middot; ![Issues Open](https://img.shields.io/github/issues/CookieComputing/muscala) &middot; ![LICENSE](https://img.shields.io/github/license/CookieComputing/muscala)
 Just another Scala-based music theory library
 
 ## What is this project?
