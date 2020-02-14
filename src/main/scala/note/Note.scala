@@ -28,30 +28,6 @@ case class Note private(note: String, octave: Int) {
     else Note(note + Note.Flat, octave).get
 
   /**
-   * Determine if this is an accidental note
-   * @return a boolean indicating if the node is accidental
-   */
-  def isAccidental: Boolean = !isNatural
-
-  /**
-   * Determine if this is a natural note.
-   * @return a boolean indicating if the node is natural
-   */
-  def isNatural: Boolean = Note.naturalSet.contains(note)
-
-  /**
-   * Determine if this is a flat note.
-   * @return a boolean indicating if the node is flat
-   */
-  def isFlat: Boolean = backingNote.note.last == Note.Flat
-
-  /**
-   * Determine if this is a sharp note.
-   * @return a boolean indicating if the note is sharp
-   */
-  def isSharp: Boolean = backingNote.note.last == Note.Sharp
-
-  /**
    * Determines if two notes are enharmonic. This should be used for testing half step equality as opposed to
    * using the equality operator, since "Ab" and "G#" may not necessarily be equivalent.
    * @param other the other note to compare
@@ -81,6 +57,14 @@ case class Note private(note: String, octave: Int) {
       case Note.NaturalNoteRegex() => Note(note, octave).get
       case Note.AccidentalNoteRegex() => adjustedNote
     }
+
+  /**
+   * Returns the number of half steps that the other note is away from this note. If the distance is positive, then
+   * the other note is distance half steps above this note, and vice versa for negatives.
+   * @param other the other note to compare
+   * @return the number of half steps these notes are apart. Positive means the other note is above this note.
+   */
+  def distance(other: Note): Int = other.noteToInt - this.noteToInt
 
   private def adjustedNote: Note = {
     val adjustedNoteRank = noteToInt

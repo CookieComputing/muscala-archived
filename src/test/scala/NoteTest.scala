@@ -79,73 +79,6 @@ class NoteTest extends FunSuite {
       => assert(actualNote enharmonic expectedNote)}
   }
 
-  test("Natural letter notes are natural") {
-    val naturalNotes = List(Note.A, Note.B, Note.C, Note.D, Note.E, Note.F, Note.G)
-      naturalNotes
-      .map {_.isNatural}
-      .map {assert(_)}
-
-    naturalNotes
-      .map {_.isAccidental}
-      .map {bool => assert(!bool)}
-  }
-
-  test("Accidental letter notes are accidental") {
-    val accidentalNotes = List(Note("A#"), Note("Bb"), Note("C#"), Note("Db"), Note("D#"),
-      Note("Eb"), Note("F#"), Note("Gb"), Note("G#"), Note("Ab"))
-
-    accidentalNotes
-      .map {_.get}
-      .map {_.isAccidental}
-      .map {assert(_)}
-
-    accidentalNotes
-      .map {_.get}
-      .map {_.isNatural}
-      .map {bool => assert(!bool)}
-  }
-
-  test("Natural notes raised or flatted can become accidental") {
-    List(Note.A, Note.C, Note.D, Note.F, Note.G)
-      .map {_.sharp}
-      .map {_.isAccidental}
-      .map {assert(_)}
-
-    List(Note.A, Note.B, Note.D, Note.E, Note.G)
-      .map {_.flat}
-      .map {_.isAccidental}
-      .map {assert(_)}
-
-    // You need to convert it to it's backing note for the note to take effect
-    List(Note.B, Note.E)
-      .map {_.sharp}
-      .map {_.backingNote}
-      .map {_.isNatural}
-      .map {assert(_)}
-
-    List(Note.C, Note.F)
-      .map {_.flat}
-      .map {_.backingNote}
-      .map {_.isNatural}
-      .map {assert(_)}
-  }
-
-  test("Accidental notes raised or flatted can become natural") {
-    List(Note("A#"), Note("C#"), Note("D#"), Note("F#"), Note("G#"))
-      .map {_.get}
-      .map {_.sharp}
-      .map {_.backingNote}
-      .map {_.isNatural}
-      .map {assert(_)}
-
-    List(Note("Ab"), Note("Bb"), Note("Db"), Note("Eb"), Note("Gb"))
-      .map {_.get}
-      .map {_.flat}
-      .map {_.backingNote}
-      .map {_.isNatural}
-      .map {assert(_)}
-  }
-
   test("Calling toString() should return the correct letters") {
     List((Note.A, "A"), (Note.B, "B"), (Note.C, "C"), (Note.D, "D"), (Note.E, "E"), (Note.F, "F"), (Note.G, "G"))
       .map {case (actualLetter, expectedLetter)
@@ -203,5 +136,60 @@ class NoteTest extends FunSuite {
     val lowestNote = Note("C", 0).get
     assert(Note("C", 0).get.flat == lowestNote)
     assert(Note("Cbbbbbbbbb", 0).get.backingNote == lowestNote)
+    assert(Note("Cbbbbbbbbb", -10).isEmpty)
+  }
+
+  test("Getting the backing note should work as expected") {
+    List((Note("Ebbbb"), Note("C")),
+      (Note("D####"), Note("F#")),
+      (Note("Ebb##"), Note("E")),
+      (Note("A#b#"), Note("A#")),
+      (Note("Fb#b"), Note("E")),
+      (Note("Gb#b"), Note("Gb")),
+      (Note("C###b"), Note("D")))
+      .map { tuple => (tuple._1.get, tuple._2.get)}
+      .map {case (actualNote, expectedNote)
+      => (assert (actualNote.backingNote == expectedNote))}
+}
+
+  test("Enharmonic notes have a distance of 0 half steps away") {
+    List(Note.A, Note.B, Note.C, Note.D, Note.E, Note.F)
+      .map { note => (note, note) }
+      .map { case (note1, note2)
+      => assert(note1.distance(note2) == 0)}
+  }
+
+  test("Accidentals have a distance of one half step away") {
+    // sharped notes are above the original note
+    List(Note.A, Note.B, Note.C, Note.D, Note.E, Note.F)
+      .map { note => (note, note.sharp) }
+      .map { case (note1, note2)
+      => assert(note1.distance(note2) == 1)}
+
+    // flatted notes are below the original note
+    List(Note.A, Note.B, Note.C, Note.D, Note.E, Note.F)
+      .map { note => (note, note.flat) }
+      .map { case (note1, note2)
+      => assert(note1.distance(note2) == -1)}
+  }
+
+  test("Accidentals that have been cancelled should have the same distance as the original note") {
+    List(Note.A, Note.B, Note.C, Note.D, Note.E, Note.F)
+      .map { note => (note, note.sharp.flat) }
+      .map { case (note1, note2)
+      => assert(note1.distance(note2) == 0)}
+
+    List(Note.A, Note.B, Note.C, Note.D, Note.E, Note.F)
+      .map { note => (note, note.flat.sharp) }
+      .map { case (note1, note2)
+      => assert(note1.distance(note2) == 0)}
+
+  }
+
+  test("Octaves have a distance of 12 half steps away") {
+    List(Note.A, Note.B, Note.C, Note.D, Note.E, Note.F)
+      .map { note => (note, Note(note.note, note.octave+1).get) }
+      .map { case (note1, note2)
+      => assert(note1.distance(note2) == 12)}
   }
 }
