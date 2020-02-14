@@ -22,10 +22,10 @@ class NoteTest extends FunSuite {
       (Note.C.flat.sharp.flat.sharp, Note.C),
       (Note.D.flat.flat.sharp.sharp, Note.D))
       .map { case (actualNote: Note, expectedNote: Note)
-      => assert(actualNote ==  expectedNote) }
+      => assert(actualNote enharmonic expectedNote) }
   }
 
-  test("An sharped/flat note should not equal the original note") {
+  test("A sharp/flat note should not equal the original note") {
     List((Note.A.sharp, Note.A),
       (Note.A.flat, Note.A),
       (Note.B.sharp, Note.B),
@@ -40,7 +40,8 @@ class NoteTest extends FunSuite {
       (Note.F.flat, Note.F),
       (Note.G.sharp, Note.G),
       (Note.G.flat, Note.G)
-    )
+    ).map { case (accidentalNote: Note, naturalNote: Note)
+    => assert(accidentalNote != naturalNote) }
   }
 
   test("Enharmonic notes should be enharmonic, but not equal") {
@@ -68,14 +69,14 @@ class NoteTest extends FunSuite {
     assert(List(Note("C#"), Note("C##"), Note("C#b#b")).count(_.isDefined) == 3)
   }
 
-  test("Using multiple accidentals in an apply should correctly adjust note") {
+  test("Using multiple accidentals in an apply should correctly adjust note to enharmonic counterpart") {
     List((Note("C##"), Note("D")),
       (Note("Dbb"), Note("C")),
       (Note("E##"), Note("F#")),
       (Note("F#b#b#b"), Note("F")))
       .map {tuple => (tuple._1.get, tuple._2.get)}
       .map { case (actualNote: Note, expectedNote: Note)
-      => assert(actualNote == expectedNote)}
+      => assert(actualNote enharmonic expectedNote)}
   }
 
   test("Natural letter notes are natural") {
@@ -115,13 +116,16 @@ class NoteTest extends FunSuite {
       .map {_.isAccidental}
       .map {assert(_)}
 
+    // You need to convert it to it's backing note for the note to take effect
     List(Note.B, Note.E)
       .map {_.sharp}
+      .map {_.backingNote}
       .map {_.isNatural}
       .map {assert(_)}
 
     List(Note.C, Note.F)
       .map {_.flat}
+      .map {_.backingNote}
       .map {_.isNatural}
       .map {assert(_)}
   }
@@ -130,12 +134,14 @@ class NoteTest extends FunSuite {
     List(Note("A#"), Note("C#"), Note("D#"), Note("F#"), Note("G#"))
       .map {_.get}
       .map {_.sharp}
+      .map {_.backingNote}
       .map {_.isNatural}
       .map {assert(_)}
 
     List(Note("Ab"), Note("Bb"), Note("Db"), Note("Eb"), Note("Gb"))
       .map {_.get}
       .map {_.flat}
+      .map {_.backingNote}
       .map {_.isNatural}
       .map {assert(_)}
   }
@@ -151,11 +157,17 @@ class NoteTest extends FunSuite {
       .map {case (actualLetter, expectedLetter)
       => (assert (actualLetter.toString == expectedLetter))}
 
-    // This is actually just going to recompute the value for edge cases
-    List((Note("Cb"), "B"), (Note("B#"), "C"), (Note("E#"), "F"), (Note("Fb"), "E"))
+    // Calling toString() will simply return the current state of the variables, without flatting them.
+    List((Note("Cb"), "Cb"), (Note("B#"), "B#"), (Note("E#"), "E#"), (Note("Fb"), "Fb"))
       .map {tuple => (tuple._1.get, tuple._2)}
       .map {case (actualLetter, expectedLetter)
       => (assert (actualLetter.toString == expectedLetter))}
+
+    // To convert them to "expected" notes, need to call backingNote()
+    List((Note("Cb"), "B"), (Note("B#"), "C"), (Note("E#"), "F"), (Note("Fb"), "E"))
+      .map {tuple => (tuple._1.get, tuple._2)}
+      .map {case (actualLetter, expectedLetter)
+      => (assert (actualLetter.backingNote.toString == expectedLetter))}
   }
 
   test("Calling toStringWithOctave() should return the correct letters and octave") {
@@ -172,11 +184,24 @@ class NoteTest extends FunSuite {
       .map {case (actualLetter, expectedLetter)
       => (assert (actualLetter.toStringWithOctave == expectedLetter))}
 
+    // Calling toStringWithOctave() will simply return the current state of the variables, without flatting them.
     // This is actually just going to recompute the value for edge cases. With B and C, they are on the edges of the
     // octave, so we adjust for the octave
-    List((Note("Cb", 1001), "B-1000"), (Note("B#", 1336), "C-1337"), (Note("E#", 42), "F-42"), (Note("Fb", 8), "E-8"))
+    List((Note("Cb", 1001), "Cb-1001"), (Note("B#", 1336), "B#-1336"), (Note("E#", 42), "E#-42"), (Note("Fb", 8), "Fb-8"))
       .map {tuple => (tuple._1.get, tuple._2)}
       .map {case (actualLetter, expectedLetter)
       => (assert (actualLetter.toStringWithOctave == expectedLetter))}
+
+    // To convert them to "expected" notes, need to call backingNote()
+    List((Note("Cb", 1001), "B-1000"), (Note("B#", 1336), "C-1337"), (Note("E#", 42), "F-42"), (Note("Fb", 8), "E-8"))
+      .map {tuple => (tuple._1.get, tuple._2)}
+      .map {case (actualLetter, expectedLetter)
+      => (assert (actualLetter.backingNote.toStringWithOctave == expectedLetter))}
+  }
+
+  test("Attempting to flat the lowest note any further than possible will result in the same note") {
+    val lowestNote = Note("C", 0).get
+    assert(Note("C", 0).get.flat == lowestNote)
+    assert(Note("Cbbbbbbbbb", 0).get.backingNote == lowestNote)
   }
 }
