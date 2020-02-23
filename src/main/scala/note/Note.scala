@@ -6,90 +6,98 @@ package note
  * enharmonic() instead of using the equality checker since notes may differ in being recently sharped or flatted.
  *
  * @param note the note in the form of a string.
- * @param octave the octave that a note is in. The lowest note possible is "C-0", and any notes below are discouraged.
+ * @param rank the number of half steps away from "C-0". It is possible to reach "negative" octaves, although the
+ *             practicality of such a note is questionable.
  */
-case class Note private(note: String, octave: Int) {
+case class Note private(note: String, rank: Int) {
+
+  /**
+   * Returns the octave of this note.
+   *
+   * @return the note's octave
+   */
+  def octave: Int = rank / Note.HalfStepsInOctave
 
   /**
    * Generates a note that is raised by one half step.
    *
    * @return a note that is one half step higher than this note
    */
-  def sharp: Note = Note(note + Note.Sharp, octave).get
+  def sharp: Note = if (note.last == Note.Flat) new Note(note.dropRight(1), rank + 1)
+  else new Note(note + Note.Sharp, rank + 1)
 
   /**
    * Generates a note that is lowered by one half step.
    *
-   * @return a note that is one half step lower than this note. If
-   *         the note is "C-0", return it
+   * @return a note that is one half step lower than this note.
    */
-  def flat: Note =
-    if (note == "C" && octave <= 0) Note("C", 0).get
-    else Note(note + Note.Flat, octave).get
+  def flat: Note = if (note.last == Note.Sharp) new Note(note.dropRight(1), rank - 1)
+  else new Note(note + Note.Flat, rank - 1)
 
   /**
    * Determines if two notes are enharmonic. This should be used for testing half step equality as opposed to
    * using the equality operator, since "Ab" and "G#" may not necessarily be equivalent.
+   *
    * @param other the other note to compare
    * @return whether or not the two notes are enharmonic.
    */
-  def enharmonic(other: Note): Boolean = backingNote.noteToInt == other.noteToInt
+  def enharmonic(other: Note): Boolean = rank == other.rank
 
   /**
-   * Creates a half step movement from this note
-   * @return a half step movement with this note
+   * Applies accidentals from this note to the note and converts it to the most "basic" note it can find. If the note
+   * remains accidental by the end of the application, leaves the rightmost accidental on the note.
+   *
+   * @return the note with all accidentals applied
    */
-  def halfStep: HalfStepMovement = HalfStepMovement(this)
-
-  /**
-   * Creates a whole step movement from this note
-   * @return a whole step movement with this note
-   */
-  def wholeStep: WholeStepMovement = WholeStepMovement(this)
-
-  /**
-   * Returns a "reduced" note in the event that the note has been flatted or sharped: This basically converts a note
-   * by applying the accidentals sequentially. If a note still has accidentals by the end of the process, the last
-   * accidental will be considered the canonical accidental after the previous accidentals have been applied.
-   * @return A Note where all redundant accidentals have been applied
-   */
-  def backingNote: Note = note match {
-      case Note.NaturalNoteRegex() => Note(note, octave).get
-      case Note.AccidentalNoteRegex() => adjustedNote
+  def applyAccidentals: Note = {
+    val offset = Note.accidentals(this).foldLeft(0) {
+      (acc, char) =>
+        char match {
+          case Note.Sharp => acc + 1
+          case Note.Flat => acc - 1
+        }
     }
+    val baseLetter = Note.naturalNoteMapping(Note.letter(this).toString)
+    val remainder = (baseLetter + offset) % Note.HalfStepsInOctave
+    val position = if (remainder < 0) remainder + Note.HalfStepsInOctave else remainder
+    if (Note.intToNaturalNote.contains(position))
+      new Note(Note.intToNaturalNote(position), rank)
+    else if (note.last == Note.Sharp)
+      new Note(Note.intToNaturalNote(position - 1) + Note.Sharp, rank)
+    else
+      new Note(Note.intToNaturalNote(position + 1) + Note.Flat, rank)
+  }
+
+  /**
+   * Removes all redundant accidentals from a note. If a note has a sharp and flat together, they will be cancelled.
+   *
+   * @return A Note where all redundant accidentals have been stripped
+   */
+  def stripRedundantAccidentals: Note = note match {
+    case Note.NaturalNoteRegex() => this.copy()
+    case Note.AccidentalNoteRegex() => adjustedNote
+  }
+
+  private def adjustedNote: Note = {
+    val remainingAccidentals = Note.accidentals(this).foldLeft("") { (acc, char) =>
+      char match {
+        case Note.Sharp if !acc.isEmpty && acc.last == Note.Flat => acc.dropRight(1)
+        case Note.Flat if !acc.isEmpty && acc.last == Note.Sharp => acc.dropRight(1)
+        case _ => acc + char
+      }
+    }
+
+    new Note(Note.letter(this).toString + remainingAccidentals, rank)
+  }
 
   /**
    * Returns the number of half steps that the other note is away from this note. If the distance is positive, then
    * the other note is distance half steps above this note, and vice versa for negatives.
+   *
    * @param other the other note to compare
    * @return the number of half steps these notes are apart. Positive means the other note is above this note.
    */
-  def distance(other: Note): Int = other.noteToInt - this.noteToInt
-
-  private def adjustedNote: Note = {
-    val adjustedNoteRank = noteToInt
-    val adjustedOctave = adjustedNoteRank / Note.HalfStepsInOctave
-
-    val noteRankRemainder = adjustedNoteRank % Note.HalfStepsInOctave
-    if (Note.intToNaturalNoteMapping.contains(noteRankRemainder)) {
-      Note(Note.intToNaturalNoteMapping(noteRankRemainder), adjustedOctave).get
-    }
-    else note.last match {
-      case Note.Sharp => Note(Note.intToNaturalNoteMapping(noteRankRemainder-1) + Note.Sharp, adjustedOctave).get
-      case Note.Flat => Note(Note.intToNaturalNoteMapping(noteRankRemainder+1) + Note.Flat, adjustedOctave).get
-    }
-  }
-
-  private def noteToInt: Int = {
-    val nonAdjustedNoteRank = octave * Note.HalfStepsInOctave + Note.naturalNoteMapping(note.take(1))
-    note.drop(1).foldLeft(nonAdjustedNoteRank) {
-      (acc: Int, accidental: Char) => (acc, accidental) match {
-        case (acc: Int, Note.Flat) if acc > 0 => acc - 1
-        case (acc: Int, Note.Sharp) => acc + 1
-        case _ => acc
-      }
-    }
-  }
+  def distance(other: Note): Int = other.rank - this.rank
 
   /**
    * @return the letter representing the note. A note is represented "as-is" in terms of the changes applied to it,
@@ -103,13 +111,16 @@ case class Note private(note: String, octave: Int) {
    *         to it, so in order to see the changes reflected in the note, one of the "backing" methods should be used to
    *         convert the note to a more traditional appearance.
    */
-  def toStringWithOctave: String = s"${this.toString}-$octave"
+  def toStringWithOctave: String = s"${this.toString}-${octave}"
 }
 
 object Note {
-  private val Flat = 'b'
-  private val Sharp = '#'
-  private val HalfStepsInOctave = 12
+  // The number of half steps in an octave.
+  val HalfStepsInOctave = 12
+  // Flat constant
+  val Flat = 'b'
+  // Sharp constant
+  val Sharp = '#'
   private val NaturalNoteRegex = "^[A-G]$".r
   private val AccidentalNoteRegex = "^[A-G][#|b]+$".r
 
@@ -123,9 +134,10 @@ object Note {
     "A" -> 9,
     "B" -> 11
   )
-  private val intToNaturalNoteMapping = naturalNoteMapping.map(_.swap)
+  private val intToNaturalNote = naturalNoteMapping.map(_.swap)
   // Hacky values determined by the ordering of the set: Refer to the wiki for more details
-  private val naturalSet = naturalNoteMapping.keys.toSet
+
+  private def octaveToRank(letter: String, octave: Int) = octave * Note.HalfStepsInOctave + Note.naturalNoteMapping(letter)
 
   /**
    * A constructor which returns a note in the 4th octave.
@@ -140,13 +152,18 @@ object Note {
    * the octave is negative, returns None
    *
    * @param note   A letter from A to G, ignoring case
-   * @param octave A number greater than zero
+   * @param octave the note's octave
    * @return The note with the given octave
    */
   def apply(note: String, octave: Int): Option[Note] = {
     note match {
-      case NaturalNoteRegex() if octave >= 0 => Some(new Note(note, octave))
-      case AccidentalNoteRegex() if octave >= 0 => Some(new Note(note, octave))
+      case NaturalNoteRegex() => Some(new Note(note, octaveToRank(note.take(1), octave)))
+      case AccidentalNoteRegex() => note.drop(1).foldLeft(Note(note.take(1), octave)) {
+        (acc, char) => char match {
+          case Note.Sharp => acc.map { _.sharp }
+          case Note.Flat => acc.map { _.flat }
+        }
+      }
       case _ => None
     }
   }
@@ -165,4 +182,20 @@ object Note {
   def F: Note = Note("F").get
 
   def G: Note = Note("G").get
+
+  /**
+   * Convenience method to extract the letter from a note
+   *
+   * @param note the note to take a letter from
+   * @return the letter of the note
+   */
+  def letter(note: Note): Char = note.note.charAt(0)
+
+  /**
+   * Convenience method to extract the accidentals from a note
+   *
+   * @param note the note to take accidentals from
+   * @return the accidentals of a note (possibly empty)
+   */
+  def accidentals(note: Note): String = note.note.drop(1)
 }

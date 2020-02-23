@@ -1,4 +1,5 @@
-import note.Note
+package note
+
 import org.scalatest.FunSuite
 
 // Unit tests for the note.Note case class, as well as examples of how to use the class
@@ -22,7 +23,7 @@ class NoteTest extends FunSuite {
       (Note.C.flat.sharp.flat.sharp, Note.C),
       (Note.D.flat.flat.sharp.sharp, Note.D))
       .map { case (actualNote: Note, expectedNote: Note)
-      => assert(actualNote enharmonic expectedNote) }
+      => assert(actualNote enharmonic expectedNote)}
   }
 
   test("A sharp/flat note should not equal the original note") {
@@ -100,7 +101,7 @@ class NoteTest extends FunSuite {
     List((Note("Cb"), "B"), (Note("B#"), "C"), (Note("E#"), "F"), (Note("Fb"), "E"))
       .map {tuple => (tuple._1.get, tuple._2)}
       .map {case (actualLetter, expectedLetter)
-      => (assert (actualLetter.backingNote.toString == expectedLetter))}
+      => (assert (actualLetter.applyAccidentals.toString == expectedLetter))}
   }
 
   test("Calling toStringWithOctave() should return the correct letters and octave") {
@@ -116,27 +117,20 @@ class NoteTest extends FunSuite {
       .map {tuple => (tuple._1.get, tuple._2)}
       .map {case (actualLetter, expectedLetter)
       => (assert (actualLetter.toStringWithOctave == expectedLetter))}
+  }
 
-    // Calling toStringWithOctave() will simply return the current state of the variables, without flatting them.
-    // This is actually just going to recompute the value for edge cases. With B and C, they are on the edges of the
-    // octave, so we adjust for the octave
-    List((Note("Cb", 1001), "Cb-1001"), (Note("B#", 1336), "B#-1336"), (Note("E#", 42), "E#-42"), (Note("Fb", 8), "Fb-8"))
+  test("toStringWithOctave() works with both applyAccidentals() and naturally") {
+    List((Note("Cb", 1001), "Cb-1000"), (Note("B#", 1336), "B#-1337"), (Note("E#", 42), "E#-42"), (Note("Fb", 8), "Fb-8"))
       .map {tuple => (tuple._1.get, tuple._2)}
       .map {case (actualLetter, expectedLetter)
       => (assert (actualLetter.toStringWithOctave == expectedLetter))}
 
-    // To convert them to "expected" notes, need to call backingNote()
+    // Notes may be confusing if redundant accidentals are not applied. In this case, it's alot clearer as to which
+    // octaves notes belong in when they have their accidentals applied.
     List((Note("Cb", 1001), "B-1000"), (Note("B#", 1336), "C-1337"), (Note("E#", 42), "F-42"), (Note("Fb", 8), "E-8"))
       .map {tuple => (tuple._1.get, tuple._2)}
       .map {case (actualLetter, expectedLetter)
-      => (assert (actualLetter.backingNote.toStringWithOctave == expectedLetter))}
-  }
-
-  test("Attempting to flat the lowest note any further than possible will result in the same note") {
-    val lowestNote = Note("C", 0).get
-    assert(Note("C", 0).get.flat == lowestNote)
-    assert(Note("Cbbbbbbbbb", 0).get.backingNote == lowestNote)
-    assert(Note("Cbbbbbbbbb", -10).isEmpty)
+      => (assert (actualLetter.applyAccidentals.toStringWithOctave == expectedLetter))}
   }
 
   test("Getting the backing note should work as expected") {
@@ -149,7 +143,7 @@ class NoteTest extends FunSuite {
       (Note("C###b"), Note("D")))
       .map { tuple => (tuple._1.get, tuple._2.get)}
       .map {case (actualNote, expectedNote)
-      => (assert (actualNote.backingNote == expectedNote))}
+      => (assert (actualNote.applyAccidentals == expectedNote))}
 }
 
   test("Enharmonic notes have a distance of 0 half steps away") {
@@ -191,5 +185,10 @@ class NoteTest extends FunSuite {
       .map { note => (note, Note(note.note, note.octave+1).get) }
       .map { case (note1, note2)
       => assert(note1.distance(note2) == 12)}
+  }
+
+  test("Sharping a B to a C should increase the octave by one") {
+    assert(Note.B.octave == 4)
+    assert(Note.B.sharp.applyAccidentals.octave == 5)
   }
 }
