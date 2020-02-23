@@ -159,7 +159,7 @@ object Note {
     note match {
       case NaturalNoteRegex() => Some(new Note(note, octaveToRank(note.take(1), octave)))
       case AccidentalNoteRegex() => note.drop(1).foldLeft(Note(note.take(1), octave)) {
-        (acc, char) => char match {
+        (acc, accidental) => accidental match {
           case Note.Sharp => acc.map { _.sharp }
           case Note.Flat => acc.map { _.flat }
         }
