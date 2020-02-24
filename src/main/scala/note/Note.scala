@@ -102,28 +102,6 @@ case class Note private(note: String, rank: Int) {
   }
 
   /**
-   * Removes all redundant accidentals from a note. If a note has a sharp and flat together, they will be cancelled.
-   *
-   * @return A Note where all redundant accidentals have been stripped
-   */
-  def stripRedundantAccidentals: Note = note match {
-    case Note.NaturalNoteRegex() => this.copy()
-    case Note.AccidentalNoteRegex() => adjustedNote
-  }
-
-  private def adjustedNote: Note = {
-    val remainingAccidentals = Note.accidentals(this).foldLeft("") { (acc, char) =>
-      char match {
-        case Note.Sharp if !acc.isEmpty && acc.last == Note.Flat => acc.dropRight(1)
-        case Note.Flat if !acc.isEmpty && acc.last == Note.Sharp => acc.dropRight(1)
-        case _ => acc + char
-      }
-    }
-
-    new Note(Note.letter(this).toString + remainingAccidentals, rank)
-  }
-
-  /**
    * Returns the number of half steps that the other note is away from this note. If the distance is positive, then
    * the other note is distance half steps above this note, and vice versa for negatives.
    *
@@ -144,7 +122,7 @@ case class Note private(note: String, rank: Int) {
    *         to it, so in order to see the changes reflected in the note, one of the "backing" methods should be used to
    *         convert the note to a more traditional appearance.
    */
-  def toStringWithOctave: String = s"${this.toString}-${octave}"
+  def toStringWithOctave: String = s"${this.toString}-$octave"
 }
 
 object Note {

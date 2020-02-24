@@ -1,6 +1,7 @@
 package note
 
 import helpers.NoteTesting
+import interval.movement.{HalfStep, WholeStep}
 import org.scalatest.FunSuite
 
 // Unit tests for the note.Note case class, as well as examples of how to use the class
@@ -12,7 +13,7 @@ class NoteTest extends FunSuite {
   }
 
   test("Notes with the same letter and octave should be the same") {
-    NoteTesting.toNoteTupleSeq(List(("A", "A"), ("B", "B"), ("C", "C"), ("D", "D"), ("E", "E"), ("F", "F"), ("G", "G")))
+    NoteTesting.toNoteTupleSeq(("A", "A"), ("B", "B"), ("C", "C"), ("D", "D"), ("E", "E"), ("F", "F"), ("G", "G"))
       .map { case (actualNote, expectedNote)
       => assert(actualNote == expectedNote)}
   }
@@ -72,10 +73,10 @@ class NoteTest extends FunSuite {
 
   test("Using multiple accidentals in an apply should correctly adjust note to enharmonic counterpart") {
     NoteTesting.toNoteTupleSeq(
-      List(("C##", "D"),
+      ("C##", "D"),
       ("Dbb", "C"),
       ("E##", "F#"),
-      ("F#b#b#b", "F")))
+      ("F#b#b#b", "F"))
       .map { case (actualNote: Note, expectedNote: Note)
       => assert(actualNote enharmonic expectedNote)}
   }
@@ -135,17 +136,16 @@ class NoteTest extends FunSuite {
 
   test("Getting the backing note should work as expected") {
     NoteTesting.toNoteTupleSeq(
-      List(
-        ("Ebbbb", "C"),
-        ("D####", "F#"),
-        ("Ebb##", "E"),
-        ("A#b#", "A#"),
-        ("Fb#b", "E"),
-        ("Gb#b", "Gb"),
-        ("C###b", "D"))
-    ).map {case (actualNote, expectedNote)
+      ("Ebbbb", "C"),
+      ("D####", "F#"),
+      ("Ebb##", "E"),
+      ("A#b#", "A#"),
+      ("Fb#b", "E"),
+      ("Gb#b", "Gb"),
+      ("C###b", "D"))
+      .map {case (actualNote, expectedNote)
       => assert (actualNote.applyAccidentals == expectedNote)}
-}
+  }
 
   test("Enharmonic notes have a distance of 0 half steps away") {
     List(Note.A, Note.B, Note.C, Note.D, Note.E, Note.F)
@@ -191,5 +191,24 @@ class NoteTest extends FunSuite {
   test("Sharping a B to a C should increase the octave by one") {
     assert(Note.B.octave == 4)
     assert(Note.B.sharp.applyAccidentals.octave == 5)
+  }
+
+  test("Invalid note construction should return None") {
+    assert(Note("f").isEmpty)
+    assert(Note("F####bbb1").isEmpty)
+  }
+
+  test("wholeStep should return a whole step movement for the given note") {
+    Note.A.wholeStep match {
+      case WholeStep(rootNote) => assert(rootNote == Note.A)
+      case _ => assert(false, "expected a whole step movement")
+    }
+  }
+
+  test("halfStep should return a half step movement for the given note") {
+    Note.A.halfStep match {
+      case HalfStep(rootNote) => assert(rootNote == Note.A)
+      case _ => assert(false, "expected a half step movement")
+    }
   }
 }

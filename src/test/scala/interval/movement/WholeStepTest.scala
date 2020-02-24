@@ -11,53 +11,53 @@ import org.scalatest.FunSuite
 class WholeStepTest extends FunSuite {
   test("Movement up from natural notes should work properly") {
     NoteTesting.toNoteTupleSeq(
-      List(("A", "B"),
+      ("A", "B"),
         ("C", "D"),
         ("D", "E"),
         ("F", "G"),
-        ("G", "A")))
+        ("G", "A"))
       .map { case (actualNote, expectedNote) =>
         assert(WholeStep(actualNote).up == expectedNote)}
   }
 
   test("Movement up from flats should retain flat value") {
     NoteTesting.toNoteTupleSeq(
-      List(("Ab", "Bb"),
+      ("Ab", "Bb"),
         ("Cb", "Db"),
         ("Db", "Eb"),
         ("Fb", "Gb"),
-        ("Gb", "Ab")))
+        ("Gb", "Ab"))
       .map { case (actualNote, expectedNote) =>
         assert(movement.WholeStep(actualNote).up == expectedNote)}
   }
 
   test("Movement up from sharps should retain sharp value") {
     NoteTesting.toNoteTupleSeq(
-      List(("A#", "B#"),
+      ("A#", "B#"),
         ("C#", "D#"),
         ("D#", "E#"),
         ("F#", "G#"),
-        ("G#", "A#")))
+        ("G#", "A#"))
       .map { case (actualNote, expectedNote) =>
         assert(movement.WholeStep(actualNote).up == expectedNote)}
   }
 
   test("Double accidentals moving up should retain their expected values") {
     NoteTesting.toNoteTupleSeq(
-      List(("Abb", "Bbb"),
+      ("Abb", "Bbb"),
         ("Cbb", "Dbb"),
         ("Dbb", "Ebb"),
         ("Fbb", "Gbb"),
-        ("Gbb", "Abb")))
+        ("Gbb", "Abb"))
       .map { case (actualNote, expectedNote) =>
         assert(movement.WholeStep(actualNote).up == expectedNote)}
 
     NoteTesting.toNoteTupleSeq(
-      List(("A##", "B##"),
+      ("A##", "B##"),
         ("C##", "D##"),
         ("D##", "E##"),
         ("F##", "G##"),
-        ("G##", "A##")))
+        ("G##", "A##"))
       .map { case (actualNote, expectedNote) =>
         assert(movement.WholeStep(actualNote).up == expectedNote)}
   }
@@ -71,53 +71,53 @@ class WholeStepTest extends FunSuite {
 
   test("Movement down from natural notes should work properly") {
     NoteTesting.toNoteTupleSeq(
-      List(("B", "A"),
+      ("B", "A"),
         ("E", "D"),
         ("D", "C"),
         ("G", "F"),
-        ("A", "G")))
+        ("A", "G"))
       .map { case (actualNote, expectedNote) =>
         assert(movement.WholeStep(actualNote).down == expectedNote)}
   }
 
   test("Movement down from flats should retain flat value") {
     NoteTesting.toNoteTupleSeq(
-      List(("Bb", "Ab"),
+      ("Bb", "Ab"),
         ("Eb", "Db"),
         ("Db", "Cb"),
         ("Gb", "Fb"),
-        ("Ab", "Gb")))
+        ("Ab", "Gb"))
       .map { case (actualNote, expectedNote) =>
         assert(movement.WholeStep(actualNote).down == expectedNote)}
   }
 
   test("Movement down from sharps should retain sharp value") {
     NoteTesting.toNoteTupleSeq(
-      List(("B#", "A#"),
+      ("B#", "A#"),
         ("E#", "D#"),
         ("D#", "C#"),
         ("G#", "F#"),
-        ("A#", "G#")))
+        ("A#", "G#"))
       .map { case (actualNote, expectedNote) =>
         assert(movement.WholeStep(actualNote).down == expectedNote)}
   }
 
   test("Double accidentals moving down should retain their expected values") {
     NoteTesting.toNoteTupleSeq(
-      List(("Bbb", "Abb"),
+      ("Bbb", "Abb"),
         ("Ebb", "Dbb"),
         ("Dbb", "Cbb"),
         ("Gbb", "Fbb"),
-        ("Abb", "Gbb")))
+        ("Abb", "Gbb"))
       .map { case (actualNote, expectedNote) =>
         assert(movement.WholeStep(actualNote).down == expectedNote)}
 
     NoteTesting.toNoteTupleSeq(
-      List(("B##", "A##"),
+      ("B##", "A##"),
         ("E##", "D##"),
         ("D##", "C##"),
         ("G##", "F##"),
-        ("A##", "G##")))
+        ("A##", "G##"))
       .map { case (actualNote, expectedNote) =>
         assert(movement.WholeStep(actualNote).down == expectedNote)}
   }
