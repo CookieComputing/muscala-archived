@@ -3,8 +3,8 @@ package interval.movement
 import note.Note
 
 /**
- * Represents a half step change.
- */
+  * Represents a half step change.
+  */
 case class HalfStep(note: Note) extends IntervalMovement {
   val interval = 1
 
