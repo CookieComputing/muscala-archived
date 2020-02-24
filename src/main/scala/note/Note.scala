@@ -1,5 +1,6 @@
 package note
 
+import interval.movement.{HalfStep, WholeStep}
 import interval.qualifier.{Major, Minor, Perfect}
 
 /**
@@ -53,6 +54,18 @@ case class Note private(note: String, rank: Int) {
    * @return the minor interval qualifier for this note
    */
   def minor: Minor = Minor(this)
+
+  /**
+   * Returns a whole step movement for this note.
+   * @return the whole step movement for this note
+   */
+  def wholeStep: WholeStep = WholeStep(this)
+
+  /**
+   * Returns a half step movement for this note.
+   * @return the half step movement for this note.
+   */
+  def halfStep: HalfStep = HalfStep(this)
 
   /**
    * Determines if two notes are enharmonic. This should be used for testing half step equality as opposed to
