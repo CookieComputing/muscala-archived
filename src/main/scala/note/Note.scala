@@ -1,5 +1,7 @@
 package note
 
+import interval.qualifier.{Major, Minor, Perfect}
+
 /**
  * The cornerstone of the library. Notes can be used independently to represent a single music note,
  * or in conjunction with other notes to represent chords. When testing for equality, you may need to consider using
@@ -33,6 +35,24 @@ case class Note private(note: String, rank: Int) {
    */
   def flat: Note = if (note.last == Note.Sharp) new Note(note.dropRight(1), rank - 1)
   else new Note(note + Note.Flat, rank - 1)
+
+  /**
+   * Returns a Perfect interval qualifer for this note.
+   * @return the perfect interval qualifer for this note
+   */
+  def perfect: Perfect = Perfect(this)
+
+  /**
+   * Returns a Major interval qualifer for this note.
+   * @return the major interval qualifer for this note
+   */
+  def major: Major = Major(this)
+
+  /**
+   * Returns a Minor interval qualifier for this note.
+   * @return the minor interval qualifier for this note
+   */
+  def minor: Minor = Minor(this)
 
   /**
    * Determines if two notes are enharmonic. This should be used for testing half step equality as opposed to
