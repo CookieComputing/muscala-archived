@@ -1,6 +1,7 @@
-package interval
+package interval.movement
 
 import helpers.NoteTesting
+import interval.movement
 import note.Note
 import org.scalatest.FunSuite
 
@@ -21,7 +22,7 @@ class HalfStepTest extends FunSuite {
     }
 
     // special edge case
-    assert(HalfStep(Note("B").get).up.applyAccidentals == Note("C", 5).get.applyAccidentals)
+    assert(movement.HalfStep(Note("B").get).up.applyAccidentals == Note("C", 5).get.applyAccidentals)
   }
 
   test("Movements from accidentals up should increment the sharp number or remove a flat") {
@@ -37,7 +38,7 @@ class HalfStepTest extends FunSuite {
       ("F#", "G"),
       ("Gb", "G"))
     ).map { case (actualNote, expectedNote) =>
-      assert(HalfStep(actualNote).up.applyAccidentals == expectedNote)
+      assert(movement.HalfStep(actualNote).up.applyAccidentals == expectedNote)
     }
   }
 
@@ -51,7 +52,7 @@ class HalfStepTest extends FunSuite {
       ("B#", "B"),
       ("A#", "A"))
     ).map { case (actualNote, expectedNote) =>
-      assert(HalfStep(actualNote).down == expectedNote)
+      assert(movement.HalfStep(actualNote).down == expectedNote)
     }
   }
 
@@ -72,7 +73,7 @@ class HalfStepTest extends FunSuite {
       ("A#", "A"),
       ("A", "Ab"))
     ).map { case (actualNote, expectedNote) =>
-      assert(HalfStep(actualNote).down.applyAccidentals == expectedNote)
+      assert(movement.HalfStep(actualNote).down.applyAccidentals == expectedNote)
     }
   }
 }

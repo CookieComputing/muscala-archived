@@ -1,6 +1,7 @@
-package interval
+package interval.movement
 
 import helpers.NoteTesting
+import interval.movement
 import note.Note
 import org.scalatest.FunSuite
 
@@ -27,7 +28,7 @@ class WholeStepTest extends FunSuite {
         ("Fb", "Gb"),
         ("Gb", "Ab")))
       .map { case (actualNote, expectedNote) =>
-        assert(WholeStep(actualNote).up == expectedNote)}
+        assert(movement.WholeStep(actualNote).up == expectedNote)}
   }
 
   test("Movement up from sharps should retain sharp value") {
@@ -38,7 +39,7 @@ class WholeStepTest extends FunSuite {
         ("F#", "G#"),
         ("G#", "A#")))
       .map { case (actualNote, expectedNote) =>
-        assert(WholeStep(actualNote).up == expectedNote)}
+        assert(movement.WholeStep(actualNote).up == expectedNote)}
   }
 
   test("Double accidentals moving up should retain their expected values") {
@@ -49,7 +50,7 @@ class WholeStepTest extends FunSuite {
         ("Fbb", "Gbb"),
         ("Gbb", "Abb")))
       .map { case (actualNote, expectedNote) =>
-        assert(WholeStep(actualNote).up == expectedNote)}
+        assert(movement.WholeStep(actualNote).up == expectedNote)}
 
     NoteTesting.toNoteTupleSeq(
       List(("A##", "B##"),
@@ -58,14 +59,14 @@ class WholeStepTest extends FunSuite {
         ("F##", "G##"),
         ("G##", "A##")))
       .map { case (actualNote, expectedNote) =>
-        assert(WholeStep(actualNote).up == expectedNote)}
+        assert(movement.WholeStep(actualNote).up == expectedNote)}
   }
 
   test("Edge case notes going up should begin dropping accidentals when necessary") {
     List((Note("Bb"), Note("C", 5)), (Note("Eb"), Note("F")))
       .map { tuple => (tuple._1.get, tuple._2.get) }
       .map { case (actualNote, expectedNote) =>
-        assert(WholeStep(actualNote).up == expectedNote)}
+        assert(movement.WholeStep(actualNote).up == expectedNote)}
   }
 
   test("Movement down from natural notes should work properly") {
@@ -76,7 +77,7 @@ class WholeStepTest extends FunSuite {
         ("G", "F"),
         ("A", "G")))
       .map { case (actualNote, expectedNote) =>
-        assert(WholeStep(actualNote).down == expectedNote)}
+        assert(movement.WholeStep(actualNote).down == expectedNote)}
   }
 
   test("Movement down from flats should retain flat value") {
@@ -87,7 +88,7 @@ class WholeStepTest extends FunSuite {
         ("Gb", "Fb"),
         ("Ab", "Gb")))
       .map { case (actualNote, expectedNote) =>
-        assert(WholeStep(actualNote).down == expectedNote)}
+        assert(movement.WholeStep(actualNote).down == expectedNote)}
   }
 
   test("Movement down from sharps should retain sharp value") {
@@ -98,7 +99,7 @@ class WholeStepTest extends FunSuite {
         ("G#", "F#"),
         ("A#", "G#")))
       .map { case (actualNote, expectedNote) =>
-        assert(WholeStep(actualNote).down == expectedNote)}
+        assert(movement.WholeStep(actualNote).down == expectedNote)}
   }
 
   test("Double accidentals moving down should retain their expected values") {
@@ -109,7 +110,7 @@ class WholeStepTest extends FunSuite {
         ("Gbb", "Fbb"),
         ("Abb", "Gbb")))
       .map { case (actualNote, expectedNote) =>
-        assert(WholeStep(actualNote).down == expectedNote)}
+        assert(movement.WholeStep(actualNote).down == expectedNote)}
 
     NoteTesting.toNoteTupleSeq(
       List(("B##", "A##"),
@@ -118,13 +119,13 @@ class WholeStepTest extends FunSuite {
         ("G##", "F##"),
         ("A##", "G##")))
       .map { case (actualNote, expectedNote) =>
-        assert(WholeStep(actualNote).down == expectedNote)}
+        assert(movement.WholeStep(actualNote).down == expectedNote)}
   }
 
   test("Edge case notes going down should begin dropping accidentals when necessary") {
     List((Note("C#", 5), Note("B", 4)), (Note("F#"), Note("E")))
       .map { tuple => (tuple._1.get, tuple._2.get) }
       .map { case (actualNote, expectedNote) =>
-        assert(WholeStep(actualNote).down == expectedNote)}
+        assert(movement.WholeStep(actualNote).down == expectedNote)}
   }
 }
