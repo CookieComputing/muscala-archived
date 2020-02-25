@@ -20,7 +20,9 @@ class MinorTest extends FunSuite {
       )
       .map {
         case (actualNote, expectedNote) =>
-          assert(actualNote.minor.second.applyAccidentals.toString == expectedNote.toString)
+          assert(
+            actualNote.minor.second.applyAccidentals.toString == expectedNote.toString
+          )
       }
   }
 
@@ -44,7 +46,7 @@ class MinorTest extends FunSuite {
         ("D", "F"),
         ("E", "G"),
         ("F", "G#"),
-        ("G", "A#"),
+        ("G", "A#")
       )
       .map {
         case (actualNote, expectedNote) =>

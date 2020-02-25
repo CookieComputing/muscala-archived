@@ -16,7 +16,7 @@ class PerfectTest extends FunSuite {
         ("D", "G"),
         ("E", "A"),
         ("F", "A#"), // this is an exception, since absolute intervals count in sharps as opposed to flats
-                     // refer to diatonic key intervals for a more accurate depiction of intervals
+        // refer to diatonic key intervals for a more accurate depiction of intervals
         ("G", "C")
       )
       .map {
@@ -66,9 +66,9 @@ class PerfectTest extends FunSuite {
 
   test("perfect octave natural note should work as expected") {
     NoteTesting.naturalNoteSeq ++ NoteTesting.accidentalNoteSeq
-      .map {
-          note => (note, note)
-        }
+      .map { note =>
+        (note, note)
+      }
       .map {
         case (actualNote, expectedNote) =>
           assert(actualNote.perfect.octave.toString == expectedNote.toString)

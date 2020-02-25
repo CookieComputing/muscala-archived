@@ -44,7 +44,7 @@ class MajorTest extends FunSuite {
         ("D", "F#"),
         ("E", "G#"),
         ("F", "A"),
-        ("G", "B"),
+        ("G", "B")
       )
       .map {
         case (actualNote, expectedNote) =>

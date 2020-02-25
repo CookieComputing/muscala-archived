@@ -111,7 +111,8 @@ class HalfStepTest extends FunSuite {
   test("A note should be extractable from a half step") {
     Note.A.halfStep match {
       case HalfStep(note) => assert(note == Note.A)
-      case _ => assert(false, "expected half step when calling halfStep() method")
+      case _ =>
+        assert(false, "expected half step when calling halfStep() method")
     }
   }
 }
