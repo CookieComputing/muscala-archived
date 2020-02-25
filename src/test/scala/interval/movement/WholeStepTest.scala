@@ -180,4 +180,11 @@ class WholeStepTest extends FunSuite {
           assert(movement.WholeStep(actualNote).down == expectedNote)
       }
   }
+
+  test("A note should be extractable from a whole step") {
+    Note.A.wholeStep match {
+      case WholeStep(note) => assert(note == Note.A)
+      case _ => assert(false, "expected half step when calling halfStep() method")
+    }
+  }
 }

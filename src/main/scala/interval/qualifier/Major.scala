@@ -25,7 +25,7 @@ case class Major(note: Note) {
     * Represents a major sixth interval.
     * @return the major sixth interval note
     */
-  def sixth: Note = NHalfSteps(note, 6).up
+  def sixth: Note = NHalfSteps(note, 9).up
 
   /**
     * Represents a major seventh interval.
