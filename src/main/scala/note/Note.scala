@@ -1,7 +1,7 @@
 package note
 
-import interval.movement.{HalfStep, WholeStep}
-import interval.qualifier.{Major, Minor, Perfect}
+import interval.qualifier.IntervalQualifier
+import interval.movement.NoteMovement
 
 /**
   * The cornerstone of the library. Notes can be used independently to represent a single music note,
@@ -12,7 +12,8 @@ import interval.qualifier.{Major, Minor, Perfect}
   * @param rank the number of half steps away from "C-0". It is possible to reach "negative" octaves, although the
   *             practicality of such a note is questionable.
   */
-case class Note private (note: String, rank: Int) {
+case class Note private (note: String, rank: Int) extends NoteMovement with IntervalQualifier {
+  override protected val movableNote: Note = this
 
   /**
     * Returns the octave of this note.
@@ -38,36 +39,6 @@ case class Note private (note: String, rank: Int) {
   def flat: Note =
     if (note.last == Note.Sharp) new Note(note.dropRight(1), rank - 1)
     else new Note(note + Note.Flat, rank - 1)
-
-  /**
-    * Returns a Perfect interval qualifer for this note.
-    * @return the perfect interval qualifer for this note
-    */
-  def perfect: Perfect = Perfect(this)
-
-  /**
-    * Returns a Major interval qualifer for this note.
-    * @return the major interval qualifer for this note
-    */
-  def major: Major = Major(this)
-
-  /**
-    * Returns a Minor interval qualifier for this note.
-    * @return the minor interval qualifier for this note
-    */
-  def minor: Minor = Minor(this)
-
-  /**
-    * Returns a whole step movement for this note.
-    * @return the whole step movement for this note
-    */
-  def wholeStep: WholeStep = WholeStep(this)
-
-  /**
-    * Returns a half step movement for this note.
-    * @return the half step movement for this note.
-    */
-  def halfStep: HalfStep = HalfStep(this)
 
   /**
     * Determines if two notes are enharmonic. This should be used for testing half step equality as opposed to

@@ -1,7 +1,6 @@
 package note
 
 import helpers.NoteTesting
-import interval.movement.{HalfStep, WholeStep}
 import org.scalatest.FunSuite
 
 // Unit tests for the note.Note case class, as well as examples of how to use the class
@@ -318,19 +317,5 @@ class NoteTest extends FunSuite {
   test("Invalid note construction should return None") {
     assert(Note("f").isEmpty)
     assert(Note("F####bbb1").isEmpty)
-  }
-
-  test("wholeStep should return a whole step movement for the given note") {
-    Note.A.wholeStep match {
-      case WholeStep(rootNote) => assert(rootNote == Note.A)
-      case _                   => assert(false, "expected a whole step movement")
-    }
-  }
-
-  test("halfStep should return a half step movement for the given note") {
-    Note.A.halfStep match {
-      case HalfStep(rootNote) => assert(rootNote == Note.A)
-      case _                  => assert(false, "expected a half step movement")
-    }
   }
 }
