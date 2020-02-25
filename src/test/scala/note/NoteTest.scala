@@ -36,9 +36,9 @@ class NoteTest extends FunSuite {
       (Note.C.flat.sharp.flat.sharp, Note.C),
       (Note.D.flat.flat.sharp.sharp, Note.D)
     ).map {
-        case (actualNote: Note, expectedNote: Note) =>
-          assert(actualNote enharmonic expectedNote)
-      }
+      case (actualNote: Note, expectedNote: Note) =>
+        assert(actualNote enharmonic expectedNote)
+    }
   }
 
   test("A sharp/flat note should not equal the original note") {
@@ -74,9 +74,9 @@ class NoteTest extends FunSuite {
       (Note.G.sharp, Note.A.flat),
       (Note.A.sharp, Note.B.flat)
     ).map {
-        case (actualNote: Note, expectedNote: Note) =>
-          assert(actualNote enharmonic expectedNote)
-      }
+      case (actualNote: Note, expectedNote: Note) =>
+        assert(actualNote enharmonic expectedNote)
+    }
 
     List(
       (Note.C.sharp, Note.D.flat),
@@ -85,9 +85,9 @@ class NoteTest extends FunSuite {
       (Note.G.sharp, Note.A.flat),
       (Note.A.sharp, Note.B.flat)
     ).map {
-        case (actualNote: Note, expectedNote: Note) =>
-          assert(actualNote != expectedNote)
-      }
+      case (actualNote: Note, expectedNote: Note) =>
+        assert(actualNote != expectedNote)
+    }
   }
 
   test("Multiple accidentals are allowed in note.Note apply() method") {
@@ -120,9 +120,9 @@ class NoteTest extends FunSuite {
       (Note.F, "F"),
       (Note.G, "G")
     ).map {
-        case (actualLetter, expectedLetter) =>
-          assert(actualLetter.toString == expectedLetter)
-      }
+      case (actualLetter, expectedLetter) =>
+        assert(actualLetter.toString == expectedLetter)
+    }
 
     List(
       (Note("A#"), "A#"),
