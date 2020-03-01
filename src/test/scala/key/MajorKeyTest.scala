@@ -5,10 +5,10 @@ import org.scalatest.FunSuite
 /**
   * Unit tests for the Key class
   */
-class KeyTest extends FunSuite {
+class MajorKeyTest extends FunSuite {
   test("Natural letter keys are valid") {
     List("A", "B", "C", "D", "E", "F", "G")
-      .map { Key(_) }
+      .map { MajorKey(_) }
       .map { key =>
         assert(key.isDefined)
       }
@@ -30,7 +30,7 @@ class KeyTest extends FunSuite {
       "Gb",
       "G#",
       "Ab"
-    ).map { Key(_) }
+    ).map { MajorKey(_) }
       .map { key =>
         assert(key.isDefined)
       }
@@ -51,13 +51,13 @@ class KeyTest extends FunSuite {
       "Gbb",
       "G##",
       "Abb"
-    ).map { Key(_) }
+    ).map { MajorKey(_) }
       .map { key =>
         assert(key.isDefined)
       }
   }
 
-  test("Natural letter keys return expected key signatures") {
+  test("Natural letter keys return expected notes in key") {
     List(
       ("A", List("A", "B", "C#", "D", "E", "F#", "G#")),
       ("B", List("B", "C#", "D#", "E", "F#", "G#", "A#")),
@@ -66,8 +66,8 @@ class KeyTest extends FunSuite {
       ("E", List("E", "F#", "G#", "A", "B", "C#", "D#")),
       ("F", List("F", "G", "A", "Bb", "C", "D", "E"))
     ).map {
-      case (tonic, expectedSignature) =>
-        assert(Key(tonic).get.signature == expectedSignature)
+      case (tonic, expectedNotes) =>
+        assert(MajorKey(tonic).get.notes == expectedNotes)
     }
   }
 
@@ -89,20 +89,46 @@ class KeyTest extends FunSuite {
       ("F#", List("F#", "G#", "A#", "B", "C#", "D#", "E#")),
       ("C#", List("C#", "D#", "E#", "F#", "G#", "A#", "B#"))
     ).map {
-      case (tonic, expectedSignature) =>
-        assert(Key(tonic).get.signature == expectedSignature)
+      case (tonic, expectedNotes) =>
+        assert(MajorKey(tonic).get.notes == expectedNotes)
     }
   }
 
-  test("Basic (single accidental) theoretical key signatures are supported") {
+  test("The entire circle of fifth signatures return expected accidentals") {
+    List(
+      ("Cb", List("Cb", "Db", "Eb", "Fb", "Gb", "Ab", "Bb")),
+      ("Gb", List("Gb", "Ab", "Bb", "Cb", "Db", "Eb")),
+      ("Db", List("Db", "Eb", "Gb", "Ab", "Bb")),
+      ("Ab", List("Ab", "Bb", "Db", "Eb")),
+      ("Eb", List("Eb", "Ab", "Bb")),
+      ("Bb", List("Bb", "Eb")),
+      ("F", List("Bb")),
+      ("C", List()),
+      ("G", List("F#")),
+      ("D", List("F#", "C#")),
+      ("A", List("C#", "F#", "G#")),
+      ("E", List("F#", "G#", "C#", "D#")),
+      ("B", List("C#", "D#", "F#", "G#", "A#")),
+      ("F#", List("F#", "G#", "A#", "C#", "D#", "E#")),
+      ("C#", List("C#", "D#", "E#", "F#", "G#", "A#", "B#"))
+    ).map {
+      case (tonic, expectedSignature) =>
+        assert(MajorKey(tonic).get.signature == expectedSignature)
+    }
+  }
+
+  test("Basic (single accidental) theoretical keys are supported") {
     List(
       ("G#", List("G#", "A#", "B#", "C#", "D#", "E#", "F##")),
       ("D#", List("D#", "E#", "F##", "G#", "A#", "B#", "C##")),
       ("A#", List("A#", "B#", "C##", "D#", "E#", "F##", "G##")),
-      ("E#", List("E#", "F#", "Eb", "Fb", "Gb", "Ab", "Bb")),
+      ("E#", List("E#", "F##", "G##", "A#", "B#", "C##", "D##")),
       ("B#", List("B#", "C##", "D##", "E#", "F##", "G##", "A##")),
       ("Fb", List("Fb", "Gb", "Ab", "Bbb", "Cb", "Db", "Eb"))
-    )
+    ).map {
+      case (tonic, expectedNotes) =>
+        assert(MajorKey(tonic).get.notes == expectedNotes)
+    }
   }
 
   test("Other variations on a key tonic are invalid") {
@@ -124,7 +150,7 @@ class KeyTest extends FunSuite {
       "",
       "a",
       "Az"
-    ).map { Key(_) }
+    ).map { MajorKey(_) }
       .map { key =>
         assert(key.isEmpty)
       }
