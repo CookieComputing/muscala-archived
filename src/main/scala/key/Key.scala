@@ -3,9 +3,9 @@ package key
 import note.Note
 
 /**
- * Represents a key. A key can contain accidentals denoting which natural notes to play
- * as sharp or flat.
- */
+  * Represents a key. A key can contain accidentals denoting which natural notes to play
+  * as sharp or flat.
+  */
 trait Key {
   // The tonic of the key
   val tonic: String
@@ -15,7 +15,8 @@ trait Key {
   val notes: List[String]
 
   // The key signature containing all accidentals in a key.
-  val signature: List[String] = notes.filter(note => note.last == Note.Flat || note.last == Note.Sharp)
+  val signature: List[String] =
+    notes.filter(note => note.last == Note.Flat || note.last == Note.Sharp)
 
   // Convert this key to a major key
   def toMajor: MajorKey

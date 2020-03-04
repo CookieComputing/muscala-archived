@@ -3,17 +3,18 @@ package key
 import note.Note
 
 /**
- * Represents a minor key.
- */
+  * Represents a minor key.
+  */
 case class MinorKey private (tonic: String, notes: List[String]) extends Key {
+
   /**
-   * @return this major key
-   */
+    * @return this major key
+    */
   override def toMajor: MajorKey = MajorKey(notes(2)).get
 
   /**
-   * @return the relative minor of this major key
-   */
+    * @return the relative minor of this major key
+    */
   override def toMinor: MinorKey = this.copy()
 }
 
@@ -25,23 +26,23 @@ object MinorKey {
     Map("F" -> 0, "C" -> 1, "G" -> 2, "D" -> 3, "A" -> 4, "E" -> 5, "B" -> 6)
 
   /**
-   * @param tonic the tonic to create a key from
-   * @return a key if the tonic is valid or none otherwise
-   */
+    * @param tonic the tonic to create a key from
+    * @return a key if the tonic is valid or none otherwise
+    */
   def apply(tonic: String): Option[MinorKey] = tonic match {
     case KeyRegex() =>
-      Some(new MinorKey(tonic, buildKeySignature(baseKey, tonic, baseKeySignature)))
+      Some(
+        new MinorKey(tonic, buildKeySignature(baseKey, tonic, baseKeySignature))
+      )
     case _ => None
   }
 
   // Follows the following heuristics for converting to another key signature
   // Sharping: Take the basic key signature, use the fifth as the new root, sharp the old 6th
   // Flatting: Take the basic key signature, use the fourth as the new root, flat the old 2nd
-  private def buildKeySignature(
-                                 tonic: String,
-                                 endTonic: String,
-                                 signature: List[String]
-                               ): List[String] = {
+  private def buildKeySignature(tonic: String,
+                                endTonic: String,
+                                signature: List[String]): List[String] = {
     val buildNewTonic = (buildNewSignature: (List[String] => List[String])) => {
       val newList = buildNewSignature(signature)
       buildKeySignature(newList.head, endTonic, newList)
@@ -64,7 +65,8 @@ object MinorKey {
   // G A Bb C D Eb F
   private def flatKeySignature(signature: List[String]): List[String] = {
     val flattedSecond = flatNote(signature(1))
-    signature.drop(3) ++ signature.take(1) ++ List(flattedSecond) ++ signature.slice(2,3)
+    signature.drop(3) ++ signature.take(1) ++ List(flattedSecond) ++ signature
+      .slice(2, 3)
   }
 
   // Example process
@@ -73,7 +75,8 @@ object MinorKey {
   // B C# D E F# G A
   private def sharpKeySignature(signature: List[String]): List[String] = {
     val sharpedSixth = sharpNote(signature(5))
-    signature.slice(4, 5) ++ List(sharpedSixth) ++ signature.takeRight(1) ++ signature.take(4)
+    signature.slice(4, 5) ++ List(sharpedSixth) ++ signature.takeRight(1) ++ signature
+      .take(4)
   }
 
   private def sharpNote(note: String) =

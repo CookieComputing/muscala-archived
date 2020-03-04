@@ -3,8 +3,8 @@ package key
 import org.scalatest.FunSuite
 
 /**
- * Unit tests for MinorKey
- */
+  * Unit tests for MinorKey
+  */
 class MinorKeyTest extends FunSuite {
   test("Natural letter keys are valid") {
     List("A", "B", "C", "D", "E", "F", "G")
@@ -94,7 +94,9 @@ class MinorKeyTest extends FunSuite {
     }
   }
 
-  test("The entire circle of minor fifth signatures return expected accidentals") {
+  test(
+    "The entire circle of minor fifth signatures return expected accidentals"
+  ) {
     List(
       ("Ab", List("Ab", "Bb", "Cb", "Db", "Eb", "Fb", "Gb")),
       ("Eb", List("Eb", "Gb", "Ab", "Bb", "Cb", "Db")),

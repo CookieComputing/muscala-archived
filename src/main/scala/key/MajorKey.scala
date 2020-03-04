@@ -7,16 +7,18 @@ import note.Note
   *
   * @param tonic the tonic of the key
   */
-case class MajorKey private(tonic: String, notes: List[String]) extends Key {
+case class MajorKey private (tonic: String, notes: List[String]) extends Key {
+
   /**
-   * @return this major key
-   */
+    * @return this major key
+    */
   override def toMajor: MajorKey = this.copy()
 
   /**
-   * @return the relative minor of this major key
-   */
-  override def toMinor: MinorKey = MinorKey(notes(5)).get // the minor is simply the aeolian mode of the major key
+    * @return the relative minor of this major key
+    */
+  override def toMinor: MinorKey =
+    MinorKey(notes(5)).get // the minor is simply the aeolian mode of the major key
 }
 
 object MajorKey {
@@ -32,18 +34,18 @@ object MajorKey {
     */
   def apply(tonic: String): Option[MajorKey] = tonic match {
     case KeyRegex() =>
-      Some(new MajorKey(tonic, buildKeySignature(baseKey, tonic, baseKeySignature)))
+      Some(
+        new MajorKey(tonic, buildKeySignature(baseKey, tonic, baseKeySignature))
+      )
     case _ => None
   }
 
   // Follows the following heuristics for converting to another key signature
   // Sharping: Take the basic key signature, use the fifth as the new root, sharp the old 4th
   // Flatting: Take the basic key signature, use the fourth as the new root, flat the old 7th
-  private def buildKeySignature(
-      tonic: String,
-      endTonic: String,
-      signature: List[String]
-  ): List[String] = {
+  private def buildKeySignature(tonic: String,
+                                endTonic: String,
+                                signature: List[String]): List[String] = {
     val buildNewTonic = (buildNewSignature: (List[String] => List[String])) => {
       val newList = buildNewSignature(signature)
       buildKeySignature(newList.head, endTonic, newList)

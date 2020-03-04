@@ -30,10 +30,8 @@ abstract class IntervalMovement {
       x - y
     })
 
-  private def changeNote(
-      modifyNote: Note => Note,
-      modifyInterval: (Int, Int) => Int
-  ) = {
+  private def changeNote(modifyNote: Note => Note,
+                         modifyInterval: (Int, Int) => Int) = {
     val rootNoteChanged = (1 to interval)
       .foldLeft(Note(Note.letter(note).toString, note.octave)) { (acc, _) =>
         acc.map { modifyNote(_) }
