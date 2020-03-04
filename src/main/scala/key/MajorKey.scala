@@ -38,7 +38,7 @@ object MajorKey {
 
   // Follows the following heuristics for converting to another key signature
   // Sharping: Take the basic key signature, use the fifth as the new root, sharp the old 4th
-  // Flatting: Take the basic key signature, use the fourth as the new root, sharp the old 7th
+  // Flatting: Take the basic key signature, use the fourth as the new root, flat the old 7th
   private def buildKeySignature(
       tonic: String,
       endTonic: String,
