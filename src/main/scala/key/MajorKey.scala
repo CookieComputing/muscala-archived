@@ -7,7 +7,8 @@ import note.Note
   *
   * @param tonic the tonic of the key
   */
-case class MajorKey private (tonic: String, notes: List[String]) extends Key {
+final case class MajorKey private (tonic: String, notes: List[String])
+    extends Key {
 
   /**
     * @return this major key
@@ -21,12 +22,10 @@ case class MajorKey private (tonic: String, notes: List[String]) extends Key {
     MinorKey(notes(5)).get // the minor is simply the aeolian mode of the major key
 }
 
-object MajorKey {
-  private val KeyRegex = "^[A-G](?:#*|b*)$".r
-  private val baseKey = "C"
-  private val baseKeySignature = List("C", "D", "E", "F", "G", "A", "B")
-  private val ordering =
-    Map("F" -> 0, "C" -> 1, "G" -> 2, "D" -> 3, "A" -> 4, "E" -> 5, "B" -> 6)
+object MajorKey extends KeyBuilder {
+  override protected val baseKey = "C"
+  override protected val baseKeySignature =
+    List("C", "D", "E", "F", "G", "A", "B")
 
   /**
     * @param tonic the tonic to create a key from
@@ -35,31 +34,21 @@ object MajorKey {
   def apply(tonic: String): Option[MajorKey] = tonic match {
     case KeyRegex() =>
       Some(
-        new MajorKey(tonic, buildKeySignature(baseKey, tonic, baseKeySignature))
+        // Follows the following heuristics for converting to another key signature
+        // Sharping: Take the basic key signature, use the fifth as the new root, sharp the old 4th
+        // Flatting: Take the basic key signature, use the fourth as the new root, flat the old 7th
+        new MajorKey(
+          tonic,
+          buildKeySignature(
+            baseKey,
+            tonic,
+            baseKeySignature,
+            sharpKeySignature,
+            flatKeySignature
+          )
+        )
       )
     case _ => None
-  }
-
-  // Follows the following heuristics for converting to another key signature
-  // Sharping: Take the basic key signature, use the fifth as the new root, sharp the old 4th
-  // Flatting: Take the basic key signature, use the fourth as the new root, flat the old 7th
-  private def buildKeySignature(tonic: String,
-                                endTonic: String,
-                                signature: List[String]): List[String] = {
-    val buildNewTonic = (buildNewSignature: (List[String] => List[String])) => {
-      val newList = buildNewSignature(signature)
-      buildKeySignature(newList.head, endTonic, newList)
-    }
-    endTonic match {
-      case _ if tonic == endTonic =>
-        signature // we have matched the signature, we are done
-      case _ if endTonic.last == Note.Sharp => buildNewTonic(sharpKeySignature)
-      case _ if endTonic.last == Note.Flat  => buildNewTonic(flatKeySignature)
-      case _ if ordering(tonic) < ordering(endTonic) =>
-        buildNewTonic(sharpKeySignature)
-      case _ if ordering(tonic) > ordering(endTonic) =>
-        buildNewTonic(flatKeySignature)
-    }
   }
 
   // Example process
@@ -79,10 +68,4 @@ object MajorKey {
     val sharpedFourth = sharpNote(signature(3))
     signature.slice(4, 7) ++ signature.take(3) ++ List(sharpedFourth)
   }
-
-  private def sharpNote(note: String) =
-    if (note.last == Note.Flat) note.drop(1) else note + Note.Sharp
-
-  private def flatNote(note: String) =
-    if (note.last == Note.Sharp) note.drop(1) else note + Note.Flat
 }
