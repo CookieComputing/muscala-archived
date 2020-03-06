@@ -15,11 +15,11 @@ trait KeyBuilder {
     Map("F" -> 0, "C" -> 1, "G" -> 2, "D" -> 3, "A" -> 4, "E" -> 5, "B" -> 6)
 
   protected def buildKeySignature(
-    tonic: String,
-    endTonic: String,
-    signature: List[String],
-    sharpKeySignature: List[String] => List[String],
-    flatKeySignature: List[String] => List[String]
+      tonic: String,
+      endTonic: String,
+      signature: List[String],
+      sharpKeySignature: List[String] => List[String],
+      flatKeySignature: List[String] => List[String]
   ): List[String] = {
     val buildNewTonic = (buildNewSignature: (List[String] => List[String])) => {
       val newList = buildNewSignature(signature)
