@@ -155,4 +155,45 @@ class MajorKeyTest extends FunSuite {
         assert(key.isEmpty)
       }
   }
+
+  test("The entire circle of fifths returns itself when converting to major") {
+    List(
+      "Cb",
+      "Gb",
+      "Ab",
+      "Eb",
+      "Bb",
+      "F",
+      "C",
+      "G",
+      "D",
+      "A",
+      "E",
+      "B",
+      "F#",
+      "C#"
+    ).map { tonic => assert(MajorKey(tonic).get.toMajor == MajorKey(tonic).get)}
+  }
+
+  test("The entire circle of fifths have their relative minor of fifths") {
+    List(
+      ("Cb", "Ab"),
+      ("Gb", "Eb"),
+      ("Db", "Bb"),
+      ("Ab", "F"),
+      ("Eb", "C"),
+      ("Bb", "G"),
+      ("F", "D"),
+      ("C", "A"),
+      ("G", "E"),
+      ("D", "B"),
+      ("A", "F#"),
+      ("E", "C#"),
+      ("B", "G#"),
+      ("F#", "D#"),
+      ("C#", "A#")
+    ).map { case (majorKey, minorKey) =>
+      assert(MajorKey(majorKey).get.toMinor == MinorKey(minorKey).get)
+    }
+  }
 }
