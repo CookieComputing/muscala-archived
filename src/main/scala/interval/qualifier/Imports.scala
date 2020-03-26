@@ -7,6 +7,7 @@ import note.Note
   */
 object Imports {
   implicit class IntervalQualifier(val note: Note) {
+
     /**
       * Returns a Perfect interval qualifier for this note.
       * @return the perfect interval qualifier for this note

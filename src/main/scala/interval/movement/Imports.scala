@@ -7,6 +7,7 @@ import note.Note
   */
 object Imports {
   implicit class NoteMovement(val note: Note) {
+
     /**
       * Returns a whole step movement for this note.
       * @return the whole step movement for this note

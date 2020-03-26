@@ -13,6 +13,7 @@ import interval.movement.Imports
   *             practicality of such a note is questionable.
   */
 case class Note private (note: String, rank: Int) {
+
   /**
     * Returns the octave of this note.
     *

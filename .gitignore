@@ -5,6 +5,7 @@
 # Binaries
 project/target/
 target/
+null/
 
 # IDE specific files
 .idea/
