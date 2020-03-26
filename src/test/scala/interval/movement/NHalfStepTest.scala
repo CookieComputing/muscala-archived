@@ -4,6 +4,7 @@ import note.Note
 import org.scalatest.FunSuite
 
 import scala.util.Random
+import interval.movement.Imports._
 
 /**
   * Unit tests fot the NHalfStep class
@@ -13,7 +14,7 @@ class NHalfStepTest extends FunSuite {
     Note.A.nHalfSteps(3) match {
       case NHalfSteps(note, interval) => assert(note == Note.A && interval == 3)
       case _ =>
-        assert(false, "expected half step when calling halfStep() method")
+        assert(condition =false, "expected half step when calling halfStep() method")
     }
   }
 

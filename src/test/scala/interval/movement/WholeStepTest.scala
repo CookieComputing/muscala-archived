@@ -4,6 +4,7 @@ import helpers.NoteTesting
 import interval.movement
 import note.Note
 import org.scalatest.FunSuite
+import interval.movement.Imports._
 
 /**
   * Represents unit tests for whole step movements
@@ -185,7 +186,7 @@ class WholeStepTest extends FunSuite {
     Note.A.wholeStep match {
       case WholeStep(note) => assert(note == Note.A)
       case _ =>
-        assert(false, "expected half step when calling halfStep() method")
+        assert(condition = false, "expected half step when calling halfStep() method")
     }
   }
 }

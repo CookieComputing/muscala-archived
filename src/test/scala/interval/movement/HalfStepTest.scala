@@ -4,6 +4,7 @@ import helpers.NoteTesting
 import interval.movement
 import note.Note
 import org.scalatest.FunSuite
+import interval.movement.Imports._
 
 /**
   * Unit tests for half step movements.
@@ -112,7 +113,7 @@ class HalfStepTest extends FunSuite {
     Note.A.halfStep match {
       case HalfStep(note) => assert(note == Note.A)
       case _ =>
-        assert(false, "expected half step when calling halfStep() method")
+        assert(condition = false, "expected half step when calling halfStep() method")
     }
   }
 }

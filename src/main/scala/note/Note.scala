@@ -1,7 +1,7 @@
 package note
 
-import interval.qualifier.IntervalQualifier
-import interval.movement.NoteMovement
+import interval.qualifier.Imports
+import interval.movement.Imports
 
 /**
   * The cornerstone of the library. Notes can be used independently to represent a single music note,
@@ -12,11 +12,7 @@ import interval.movement.NoteMovement
   * @param rank the number of half steps away from "C-0". It is possible to reach "negative" octaves, although the
   *             practicality of such a note is questionable.
   */
-case class Note private (note: String, rank: Int)
-    extends NoteMovement
-    with IntervalQualifier {
-  override protected val movableNote: Note = this
-
+case class Note private (note: String, rank: Int) {
   /**
     * Returns the octave of this note.
     *

@@ -2,9 +2,10 @@ package interval.qualifier
 
 import helpers.NoteTesting
 import org.scalatest.FunSuite
+import interval.qualifier.Imports._
 
 /**
-  * Represents unit tests for the major interval qualifer
+  * Represents unit tests for the major interval qualifier
   */
 class MajorTest extends FunSuite {
   test("major second natural note should work as expected") {
