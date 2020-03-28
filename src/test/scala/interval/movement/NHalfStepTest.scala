@@ -4,7 +4,8 @@ import note.Note
 import org.scalatest.FunSuite
 
 import scala.util.Random
-import interval.movement.Imports._
+import interval.movement.absolute.Imports._
+import interval.movement.absolute.NHalfSteps
 
 /**
   * Unit tests fot the NHalfStep class

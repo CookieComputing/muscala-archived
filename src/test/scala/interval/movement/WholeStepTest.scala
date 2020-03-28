@@ -4,7 +4,8 @@ import helpers.NoteTesting
 import interval.movement
 import note.Note
 import org.scalatest.FunSuite
-import interval.movement.Imports._
+import interval.movement.absolute.Imports._
+import interval.movement.absolute.WholeStep
 
 /**
   * Represents unit tests for whole step movements
@@ -21,7 +22,7 @@ class WholeStepTest extends FunSuite {
       )
       .map {
         case (actualNote, expectedNote) =>
-          assert(WholeStep(actualNote).up == expectedNote)
+          assert(absolute.WholeStep(actualNote).up == expectedNote)
       }
   }
 
@@ -36,7 +37,7 @@ class WholeStepTest extends FunSuite {
       )
       .map {
         case (actualNote, expectedNote) =>
-          assert(movement.WholeStep(actualNote).up == expectedNote)
+          assert(WholeStep(actualNote).up == expectedNote)
       }
   }
 
@@ -51,7 +52,7 @@ class WholeStepTest extends FunSuite {
       )
       .map {
         case (actualNote, expectedNote) =>
-          assert(movement.WholeStep(actualNote).up == expectedNote)
+          assert(absolute.WholeStep(actualNote).up == expectedNote)
       }
   }
 
@@ -66,7 +67,7 @@ class WholeStepTest extends FunSuite {
       )
       .map {
         case (actualNote, expectedNote) =>
-          assert(movement.WholeStep(actualNote).up == expectedNote)
+          assert(absolute.WholeStep(actualNote).up == expectedNote)
       }
 
     NoteTesting
@@ -79,7 +80,7 @@ class WholeStepTest extends FunSuite {
       )
       .map {
         case (actualNote, expectedNote) =>
-          assert(movement.WholeStep(actualNote).up == expectedNote)
+          assert(absolute.WholeStep(actualNote).up == expectedNote)
       }
   }
 
@@ -92,7 +93,7 @@ class WholeStepTest extends FunSuite {
       }
       .map {
         case (actualNote, expectedNote) =>
-          assert(movement.WholeStep(actualNote).up == expectedNote)
+          assert(absolute.WholeStep(actualNote).up == expectedNote)
       }
   }
 
@@ -107,7 +108,7 @@ class WholeStepTest extends FunSuite {
       )
       .map {
         case (actualNote, expectedNote) =>
-          assert(movement.WholeStep(actualNote).down == expectedNote)
+          assert(absolute.WholeStep(actualNote).down == expectedNote)
       }
   }
 
@@ -122,7 +123,7 @@ class WholeStepTest extends FunSuite {
       )
       .map {
         case (actualNote, expectedNote) =>
-          assert(movement.WholeStep(actualNote).down == expectedNote)
+          assert(absolute.WholeStep(actualNote).down == expectedNote)
       }
   }
 
@@ -137,7 +138,7 @@ class WholeStepTest extends FunSuite {
       )
       .map {
         case (actualNote, expectedNote) =>
-          assert(movement.WholeStep(actualNote).down == expectedNote)
+          assert(absolute.WholeStep(actualNote).down == expectedNote)
       }
   }
 
@@ -152,7 +153,7 @@ class WholeStepTest extends FunSuite {
       )
       .map {
         case (actualNote, expectedNote) =>
-          assert(movement.WholeStep(actualNote).down == expectedNote)
+          assert(absolute.WholeStep(actualNote).down == expectedNote)
       }
 
     NoteTesting
@@ -165,7 +166,7 @@ class WholeStepTest extends FunSuite {
       )
       .map {
         case (actualNote, expectedNote) =>
-          assert(movement.WholeStep(actualNote).down == expectedNote)
+          assert(absolute.WholeStep(actualNote).down == expectedNote)
       }
   }
 
@@ -178,7 +179,7 @@ class WholeStepTest extends FunSuite {
       }
       .map {
         case (actualNote, expectedNote) =>
-          assert(movement.WholeStep(actualNote).down == expectedNote)
+          assert(absolute.WholeStep(actualNote).down == expectedNote)
       }
   }
 

@@ -1,6 +1,7 @@
 package interval.qualifier
 
-import interval.movement.{HalfStep, NHalfSteps}
+import interval.movement.{NHalfSteps, absolute}
+import interval.movement.absolute.{HalfStep, NHalfSteps}
 import note.Note
 
 /**
@@ -25,11 +26,11 @@ case class Minor(note: Note) {
     * Represents a minor sixth interval.
     * @return the minor sixth interval note
     */
-  def sixth: Note = NHalfSteps(note, 8).up
+  def sixth: Note = absolute.NHalfSteps(note, 8).up
 
   /**
     * Represents a minor seventh interval.
     * @return the minor seventh interval note
     */
-  def seventh: Note = NHalfSteps(note, 10).up
+  def seventh: Note = absolute.NHalfSteps(note, 10).up
 }

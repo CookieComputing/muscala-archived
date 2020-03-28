@@ -1,11 +1,5 @@
 package key
 
-import key.MajorKey.{
-  buildKeySignature,
-  flatKeySignature,
-  ordering,
-  sharpKeySignature
-}
 import note.Note
 
 import scala.util.matching.Regex
