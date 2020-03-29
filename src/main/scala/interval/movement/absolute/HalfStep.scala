@@ -7,6 +7,7 @@ import note.Note
   * Represents a half step change.
   */
 case class HalfStep(note: Note) extends IntervalMovement {
+
   /**
     * Raises the note by a half step
     * @return a note raised by a half step

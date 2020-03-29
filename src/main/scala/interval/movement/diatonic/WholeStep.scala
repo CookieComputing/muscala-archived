@@ -7,7 +7,8 @@ import note.Note
 /**
   * Represents a whole step change.
   */
-case class WholeStep(rootNote: Note)(implicit val key: Key) extends IntervalMovement {
+case class WholeStep(rootNote: Note)(implicit val key: Key)
+    extends IntervalMovement {
   private val wholeStepMovement = NHalfSteps(rootNote, 2)
 
   /**

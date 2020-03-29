@@ -7,7 +7,8 @@ import interval.movement.IntervalMovement
 /**
   * Represents a half step change.
   */
-case class HalfStep(note: Note)(implicit val key: Key) extends IntervalMovement {
+case class HalfStep(note: Note)(implicit val key: Key)
+    extends IntervalMovement {
   private val halfStepMovement = NHalfSteps(note, 1)
 
   /**

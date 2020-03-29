@@ -6,7 +6,7 @@ import note.Note
 
 /**
   * An interval qualifier for minor intervals on a note.
- *
+  *
   * @param note the note to move up from
   */
 case class Minor(note: Note) {

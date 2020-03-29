@@ -8,6 +8,7 @@ import note.Note
   * basic movements.
   */
 case class NHalfSteps(note: Note, n: Int) extends IntervalMovement {
+
   /**
     * Raises a note by n half steps
     * @return a note raised by n half steps
@@ -27,9 +28,9 @@ case class NHalfSteps(note: Note, n: Int) extends IntervalMovement {
     })
 
   private def changeNote(
-                          modifyNote: Note => Note,
-                          modifyInterval: (Int, Int) => Int
-                        ) = {
+      modifyNote: Note => Note,
+      modifyInterval: (Int, Int) => Int
+  ) = {
     val rootNoteChanged = (1 to n)
       .foldLeft(Note(Note.letter(note).toString, note.octave)) { (acc, _) =>
         acc.map { modifyNote(_) }
