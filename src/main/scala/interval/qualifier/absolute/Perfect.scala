@@ -1,7 +1,6 @@
-package interval.qualifier
+package interval.qualifier.absolute
 
 import interval.movement.absolute
-import interval.movement.absolute.NHalfSteps
 import note.Note
 
 /**

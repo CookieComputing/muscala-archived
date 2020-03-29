@@ -1,4 +1,4 @@
-package interval.qualifier
+package interval.qualifier.absolute
 
 import note.Note
 

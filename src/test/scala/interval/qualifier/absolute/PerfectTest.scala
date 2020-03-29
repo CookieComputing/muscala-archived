@@ -1,8 +1,8 @@
-package interval.qualifier
+package interval.qualifier.absolute
 
 import helpers.NoteTesting
+import interval.qualifier.absolute.Imports._
 import org.scalatest.FunSuite
-import interval.qualifier.Imports._
 
 /**
   * Represents unit tests for the perfect interval qualifier

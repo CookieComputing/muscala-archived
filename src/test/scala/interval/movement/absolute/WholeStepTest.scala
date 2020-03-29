@@ -1,11 +1,10 @@
-package interval.movement
+package interval.movement.absolute
 
 import helpers.NoteTesting
-import interval.movement
+import interval.movement.absolute
+import interval.movement.absolute.Imports._
 import note.Note
 import org.scalatest.FunSuite
-import interval.movement.absolute.Imports._
-import interval.movement.absolute.WholeStep
 
 /**
   * Represents unit tests for whole step movements

@@ -1,7 +1,7 @@
 package note
 
 import interval.movement.absolute.Imports
-import interval.qualifier.Imports
+import interval.qualifier.absolute.Imports
 
 /**
   * The cornerstone of the library. Notes can be used independently to represent a single music note,
