@@ -68,4 +68,19 @@ object MajorKey extends KeyBuilder {
     val sharpedFourth = sharpNote(signature(3))
     signature.slice(4, 7) ++ signature.take(3) ++ List(sharpedFourth)
   }
+
+  // Convenience methods for major keys
+  def A: Key = MajorKey("A").get
+
+  def B: Key = MajorKey("B").get
+
+  def C: Key = MajorKey("C").get
+
+  def D: Key = MajorKey("D").get
+
+  def E: Key = MajorKey("E").get
+
+  def F: Key = MajorKey("F").get
+
+  def G: Key = MajorKey("G").get
 }

@@ -67,4 +67,19 @@ object MinorKey extends KeyBuilder {
     signature.slice(4, 5) ++ List(sharpedSixth) ++ signature.takeRight(1) ++ signature
       .take(4)
   }
+
+  // convenience wrappers for natural minor keys
+  def A: MinorKey = MinorKey("A").get
+
+  def B: MinorKey = MinorKey("B").get
+
+  def C: MinorKey = MinorKey("C").get
+
+  def D: MinorKey = MinorKey("D").get
+
+  def E: MinorKey = MinorKey("E").get
+
+  def F: MinorKey = MinorKey("F").get
+
+  def G: MinorKey = MinorKey("G").get
 }
