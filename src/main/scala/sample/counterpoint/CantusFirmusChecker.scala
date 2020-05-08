@@ -8,7 +8,20 @@ import sample.counterpoint.rules.CantusFirmusRules._
   * as detailed from the Open Music theory website: http://openmusictheory.com/cantusFirmus.html
   */
 case class CantusFirmusChecker() extends CounterpointChecker {
-  val rules: List[Rule] = List(singleVoicing,
+  val rules: List[Rule] = List(
+    singleVoicing,
     cantusFirmusLength,
-    beginAndEndOnTonic)
+    beginAndEndOnTonic,
+    approachFinalTonicByStep,
+    melodicConsonancesOnly,
+    doesNotOutlineDissonances,
+    doesNotExceedTenth,
+    singleClimax,
+    mostlyStepwiseMotion,
+    noMotifRepetition,
+    largeLeapsAreCounteractedByContraryStepwiseMotion,
+    twoConsecutiveLeapsOrLess,
+    leadingToneProgressesToTonic,
+    leadingToneOnlyAppearsInPenultimateBarInMinor
+  )
 }

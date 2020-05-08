@@ -41,5 +41,19 @@ class CantusFirmusRulesTest extends FunSuite {
   }
 
   test("A cantus firmus should approach the final tonic by step") {
+    assert(approachFinalTonicByStep((
+      List(NoteTesting.toNoteSeq("A", "B", "C", "D", "B", "A")), MajorKey.A)).isRight)
+    assert(approachFinalTonicByStep((
+      List(NoteTesting.toNoteSeq("G#", "A")), MajorKey.A)).isRight)
+    assert(approachFinalTonicByStep((
+      List(NoteTesting.toNoteSeq("A#", "B")), MajorKey.B)).isRight)
+    assert(approachFinalTonicByStep((
+      List(NoteTesting.toNoteSeq("C#", "B")), MajorKey.B)).isRight)
+    assert(approachFinalTonicByStep((
+      List(NoteTesting.toNoteSeq("A", "B")), MajorKey.B)).isLeft)
+    assert(approachFinalTonicByStep((
+      List(NoteTesting.toNoteSeq("A#b", "B")), MajorKey.B)).isLeft)
+    assert(approachFinalTonicByStep((
+      List(NoteTesting.toNoteSeq("C", "B")), MajorKey.B)).isLeft)
   }
 }
