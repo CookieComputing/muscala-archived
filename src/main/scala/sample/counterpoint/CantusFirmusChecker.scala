@@ -8,9 +8,7 @@ import sample.counterpoint.rules.CantusFirmusRules._
   * as detailed from the Open Music theory website: http://openmusictheory.com/cantusFirmus.html
   */
 case class CantusFirmusChecker() extends CounterpointChecker {
-  val rules: List[Rule] = List(singleVoicing, cantusFirmusLength)
-}
-
-object CantusFirmusChecker {
-  val invalidCompositionError = "Cantus firmus: expected a single sequence, got %d sequences"
+  val rules: List[Rule] = List(singleVoicing,
+    cantusFirmusLength,
+    beginAndEndOnTonic)
 }

@@ -19,7 +19,7 @@ case object CantusFirmusRules {
     * @return an either indicating success or a tuple with warnings and errors
     */
   def singleVoicing(composition: Composition): Either[(List[Warning], List[Error]), Unit] =
-    if (voice(composition).length == 1) Right()
+    if (composition._1.length == 1) Right()
     else Left(Nil, List(cantusFirmusSingleVoicing))
 
   /**
@@ -41,6 +41,15 @@ case object CantusFirmusRules {
     val key = getKey(composition)
     if (melody.head == melody.last && melody.head.note == key.tonic && melody.last.note == key.tonic) Right()
     else Left(Nil, List(cantusFirmusInvalidTonicEdges))
+  }
+
+  /**
+    * Ensure that the composition approaches the final tonic by a tonic step
+    * @param composition the provided composition
+    * @return an either indicating success or a tuple with warnings and errors
+    */
+  def approachFinalTonicByStep(composition: Composition): Either[(List[Warning], List[Error]), Unit] = {
+    ???
   }
 
   private def voice(composition: Composition) = composition._1.head

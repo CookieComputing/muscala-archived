@@ -41,6 +41,5 @@ class CantusFirmusRulesTest extends FunSuite {
   }
 
   test("A cantus firmus should approach the final tonic by step") {
-    ??? // TODO: Implement
   }
 }
