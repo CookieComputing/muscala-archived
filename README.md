@@ -12,6 +12,12 @@ library. This project aims to deliver a similar experience to those libraries
 by building off of the successes and mistakes made in those music theory
 libraries to deliver an idiomatic Scala experience.
 
+## Examples
+Refer to the `samples` directory for a few examples on how this library
+can be used! A notable project in the samples project is the Counterpoint
+analyzer tool, which makes extensive use of the library's intervals and 
+notes features.
+
 ## Contributions
 I welcome any contributions, whether they're pull requests, issues, or
 just friendly advice on how I could make this project better! I'm still a
