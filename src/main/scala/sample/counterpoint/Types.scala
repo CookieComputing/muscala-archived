@@ -12,7 +12,10 @@ object Types {
   // An error in the counterpoint composition
   type Error = String
 
+  // Convenience type for creating a list of issues found with a composition
+  type CompIssues = (List[Warning], List[Error])
+
   // A rule can correctly evaluate to nothing or a list of issues encountered in the stream.
-  type Rule = Composition => Either[(List[Warning], List[Error]), Unit]
+  type Rule = Composition => Either[CompIssues, Unit]
 }
 

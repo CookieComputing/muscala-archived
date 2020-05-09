@@ -24,7 +24,7 @@ case object CantusFirmusRules {
     * @param composition the provided composition
     * @return an either indicating success or a tuple with warnings and errors
     */
-  def singleVoicing(composition: Composition): Either[(List[Warning], List[Error]), Unit] =
+  def singleVoicing(composition: Composition): Either[CompIssues, Unit] =
     if (composition._1.length == 1) Right()
     else Left(Nil, List(cantusFirmusSingleVoicing))
 
@@ -33,7 +33,7 @@ case object CantusFirmusRules {
     * @param composition the provided composition
     * @return an either indicating success or a tuple with warnings and errors
     */
-  def cantusFirmusLength(composition: Composition): Either[(List[Warning], List[Error]), Unit] =
+  def cantusFirmusLength(composition: Composition): Either[CompIssues, Unit] =
     if (8 <= voice(composition).length && voice(composition).length <= 16) Right()
     else Left(Nil, List(cantusFirmusInvalidLength))
 
@@ -42,7 +42,7 @@ case object CantusFirmusRules {
     * @param composition the provided composition
     * @return an either indicating success or a tuple with warnings and errors
     */
-  def beginAndEndOnTonic(composition: Composition): Either[(List[Warning], List[Error]), Unit] = {
+  def beginAndEndOnTonic(composition: Composition): Either[CompIssues, Unit] = {
     val melody = voice(composition)
     val key = getKey(composition)
     if (melody.head == melody.last && melody.head.note == key.tonic && melody.last.note == key.tonic) Right()
@@ -54,7 +54,7 @@ case object CantusFirmusRules {
     * @param composition the provided composition
     * @return an either indicating success or a tuple with warnings and errors
     */
-  def approachFinalTonicByStep(composition: Composition): Either[(List[Warning], List[Error]), Unit] = {
+  def approachFinalTonicByStep(composition: Composition): Either[CompIssues, Unit] = {
     val key = getKey(composition)
     if (List(key.notes(1), key.notes.last).contains(voice(composition).dropRight(1).last.note)) Right()
     else Left(Nil, List(cantusFirmusInvalidFinalStepApproach))
@@ -69,7 +69,7 @@ case object CantusFirmusRules {
     * @param composition the provided composition
     * @return an either indicating success or a tuple with warnings and errors
     */
-  def melodicConsonancesOnly(composition: Composition): Either[(List[Warning], List[Error]), Unit] = {
+  def melodicConsonancesOnly(composition: Composition): Either[CompIssues, Unit] = {
     ???
   }
 
@@ -80,7 +80,7 @@ case object CantusFirmusRules {
     * @param composition the provided composition
     * @return an either indicating success or a tuple with warnings and errors
     */
-  def doesNotOutlineDissonances(composition: Composition): Either[(List[Warning], List[Error]), Unit] = {
+  def doesNotOutlineDissonances(composition: Composition): Either[CompIssues, Unit] = {
     ???
   }
 
@@ -89,7 +89,7 @@ case object CantusFirmusRules {
     * @param composition the provided composition
     * @return an either indicating success or a tuple with warnings and errors
     */
-  def doesNotExceedTenth(composition: Composition): Either[(List[Warning], List[Error]), Unit] = {
+  def doesNotExceedTenth(composition: Composition): Either[CompIssues, Unit] = {
     ???
   }
 
@@ -98,7 +98,7 @@ case object CantusFirmusRules {
     * @param composition the provided composition
     * @return an either indicating success or a tuple with warnings and errors
     */
-  def singleClimax(composition: Composition): Either[(List[Warning], List[Error]), Unit] = {
+  def singleClimax(composition: Composition): Either[CompIssues, Unit] = {
     ???
   }
 
@@ -107,7 +107,7 @@ case object CantusFirmusRules {
     * @param composition the provided composition
     * @return an either indicating success or a tuple with warnings and errors
     */
-  def mostlyStepwiseMotion(composition: Composition): Either[(List[Warning], List[Error]), Unit] = {
+  def mostlyStepwiseMotion(composition: Composition): Either[CompIssues, Unit] = {
     ???
   }
 
@@ -116,7 +116,7 @@ case object CantusFirmusRules {
     * @param composition the provided composition
     * @return an either indicating success or a tuple with warnings and errors
     */
-  def noMotifRepetition(composition: Composition): Either[(List[Warning], List[Error]), Unit] = {
+  def noMotifRepetition(composition: Composition): Either[CompIssues, Unit] = {
     ???
   }
 
@@ -126,7 +126,7 @@ case object CantusFirmusRules {
     * @return an either indicating success or a tuple with warnings and errors
     */
   def largeLeapsAreCounteractedByContraryStepwiseMotion(composition: Composition):
-  Either[(List[Warning], List[Error]), Unit] = {
+  Either[CompIssues, Unit] = {
     ???
   }
 
@@ -135,7 +135,7 @@ case object CantusFirmusRules {
     * @param composition the provided composition
     * @return an either indicating success or a tuple with warnings and errors
     */
-  def twoConsecutiveLeapsOrLess(composition: Composition): Either[(List[Warning], List[Error]), Unit] = {
+  def twoConsecutiveLeapsOrLess(composition: Composition): Either[CompIssues, Unit] = {
     ???
   }
 
@@ -144,7 +144,7 @@ case object CantusFirmusRules {
     * @param composition the provided composition
     * @return an either indicating success or a tuple with warnings and errors
     */
-  def leadingToneProgressesToTonic(composition: Composition): Either[(List[Warning], List[Error]), Unit] = {
+  def leadingToneProgressesToTonic(composition: Composition): Either[CompIssues, Unit] = {
     ???
   }
 
@@ -153,8 +153,7 @@ case object CantusFirmusRules {
     * @param composition
     * @return
     */
-  def leadingToneOnlyAppearsInPenultimateBarInMinor(composition: Composition):
-  Either[(List[Warning], List[Error]), Unit] = {
+  def leadingToneOnlyAppearsInPenultimateBarInMinor(composition: Composition): Either[CompIssues, Unit] = {
     ???
   }
 
