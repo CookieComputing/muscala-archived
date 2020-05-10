@@ -52,9 +52,18 @@ class CantusFirmusRulesTest extends FunSuite {
     assert(approachFinalTonicByStep((
       List(NoteTesting.toNoteSeq("A", "B")), MajorKey.B)).isLeft)
     assert(approachFinalTonicByStep((
+      List(NoteTesting.toNoteSeq("A", "B")), MajorKey.B)).swap.getOrElse(Nil)
+      == (Nil, List(cantusFirmusInvalidFinalStepApproach)))
+    assert(approachFinalTonicByStep((
       List(NoteTesting.toNoteSeq("A#b", "B")), MajorKey.B)).isLeft)
     assert(approachFinalTonicByStep((
+      List(NoteTesting.toNoteSeq("A#b", "B")), MajorKey.B)).swap.getOrElse(Nil)
+    == (Nil, List(cantusFirmusInvalidFinalStepApproach)))
+    assert(approachFinalTonicByStep((
       List(NoteTesting.toNoteSeq("C", "B")), MajorKey.B)).isLeft)
+    assert(approachFinalTonicByStep((
+      List(NoteTesting.toNoteSeq("C", "B")), MajorKey.B)).swap.getOrElse(Nil)
+    == (Nil, List(cantusFirmusInvalidFinalStepApproach)))
   }
 
   test("A cantus firmus should only have melodic consonances") {
@@ -90,13 +99,56 @@ class CantusFirmusRulesTest extends FunSuite {
     // Augmented fourth
     assert(melodicConsonancesOnly((
       List(NoteTesting.toNoteSeq("C", "F#")), MajorKey.C)).isLeft)
+    assert(melodicConsonancesOnly((
+      List(NoteTesting.toNoteSeq("C", "F#")), MajorKey.C)).swap.getOrElse(Nil)
+    == (Nil, List(cantusFirmusDissonantMelodicInterval.format("C", "F#"))))
     // Diminished fifth
     assert(melodicConsonancesOnly((
       List(NoteTesting.toNoteSeq("C", "Gb")), MajorKey.C)).isLeft)
+    assert(melodicConsonancesOnly((
+      List(NoteTesting.toNoteSeq("C", "Gb")), MajorKey.C)).swap.getOrElse(Nil)
+    == (Nil, List(cantusFirmusDissonantMelodicInterval.format("C", "Gb"))))
     // Sevenths - major/minor
     assert(melodicConsonancesOnly((
       List(NoteTesting.toNoteSeq("C", "B")), MajorKey.C)).isLeft)
     assert(melodicConsonancesOnly((
+      List(NoteTesting.toNoteSeq("C", "B")), MajorKey.C)).swap.getOrElse(Nil)
+      == (Nil, List(cantusFirmusDissonantMelodicInterval.format("C", "B"))))
+    assert(melodicConsonancesOnly((
       List(NoteTesting.toNoteSeq("C", "Bb")), MajorKey.C)).isLeft)
+    assert(melodicConsonancesOnly((
+      List(NoteTesting.toNoteSeq("C", "Bb")), MajorKey.C)).swap.getOrElse(Nil)
+      == (Nil, List(cantusFirmusDissonantMelodicInterval.format("C", "Bb"))))
+  }
+
+  test("A cantus firmus should not outline any dissonant notes") {
+    // TODO: implement
+  }
+
+  test("A cantus firmus should have a range of a tenth or less") {
+    assert(doesNotExceedTenth((List(NoteTesting.toNoteSeq("C", "D", "E", "F", "G", "A", "B")), MajorKey.C))
+      .isRight)
+    assert(doesNotExceedTenth((
+      List(List(Note("C", 4).get, Note("C", 5).get, Note("D", 5).get, Note("Eb", 5).get, Note("E", 5).get)),
+      MajorKey.C)).isRight)
+    assert(doesNotExceedTenth((
+      List(List(Note("C", 4).get, Note("E#", 5).get)),
+      MajorKey.C)).isLeft)
+    assert(doesNotExceedTenth((
+      List(List(Note("C", 4).get, Note("E#", 5).get)),
+      MajorKey.C)).swap.getOrElse(Nil)
+    == (Nil, List(cantusFirmusDoesNotExceedTenth)))
+  }
+
+  test("A cantus firmus should have just a single climax") {
+    assert(singleClimax((List(NoteTesting.toNoteSeq("C", "D", "E", "F", "G", "F", "E", "D", "C")), MajorKey.C))
+      .isRight)
+    // We can almost reach the climax but not quite touch it, and the composition is still valid
+    assert(singleClimax((List(NoteTesting.toNoteSeq("C", "D", "E", "D", "C", "D")), MajorKey.C))
+      .isRight)
+    assert(singleClimax((List(NoteTesting.toNoteSeq("C", "D", "E", "D", "C", "D", "E")), MajorKey.C))
+      .isLeft)
+    assert(singleClimax((List(NoteTesting.toNoteSeq("C", "D", "E", "D", "C", "D", "E")), MajorKey.C))
+      .swap.getOrElse(Nil) == (Nil, List(cantusFirmusSingleClimax)))
   }
 }

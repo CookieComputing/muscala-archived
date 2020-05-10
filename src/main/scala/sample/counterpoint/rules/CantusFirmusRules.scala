@@ -19,6 +19,9 @@ case object CantusFirmusRules {
   val cantusFirmusInvalidLength: Error = "cantus firmus should have 8 - 16 notes"
   val cantusFirmusInvalidTonicEdges: Error = "cantus firmus should start and end on tonic, in same register"
   val cantusFirmusInvalidFinalStepApproach: Error = "cantus firmus should approach final tonic by step"
+  val cantusFirmusDissonantMelodicInterval: Error = "found bad interval: %s -> %s is a dissonant interval"
+  val cantusFirmusDoesNotExceedTenth: Error = "cantus firmus should not exceed a tenth in range"
+  val cantusFirmusSingleClimax: Error = "cantus firmus should have a single climax"
 
   /**
     * Ensure that the composition has a single voicing
@@ -80,23 +83,22 @@ case object CantusFirmusRules {
       (acc, note) => {
         val (errors, baseNote) = acc
         if (equalDistance(baseNote, note, baseNote.perfect.fourth) ||
-          (equalDistance(baseNote, note, baseNote.perfect.fifth)) ||
-          (equalDistance(baseNote, note, baseNote.perfect.octave)) ||
-          (equalDistance(baseNote, note, baseNote.major.second)) ||
+          equalDistance(baseNote, note, baseNote.perfect.fifth) ||
+          equalDistance(baseNote, note, baseNote.perfect.octave) ||
+          equalDistance(baseNote, note, baseNote.major.second) ||
           (equalDistance(baseNote, note, baseNote.minor.second)) ||
-          (equalDistance(baseNote, note, baseNote.major.third)) ||
-          (equalDistance(baseNote, note, baseNote.minor.third)) ||
-          (equalDistance(baseNote, note, baseNote.major.sixth)) ||
-          (equalDistance(baseNote, note, baseNote.minor.sixth))
-        ) ((errors, note))
-        else ((errors ++ List("foo"), note))
+          equalDistance(baseNote, note, baseNote.major.third) ||
+          equalDistance(baseNote, note, baseNote.minor.third) ||
+          equalDistance(baseNote, note, baseNote.major.sixth) ||
+          equalDistance(baseNote, note, baseNote.minor.sixth)
+        ) (errors, note)
+        else (errors ++ List(cantusFirmusDissonantMelodicInterval.format(baseNote.note, note.note)), note)
       }
     } match {
       case (Nil, _) => Right()
       case (errors, _) => Left((Nil, errors))
     }
   }
-
 
   /**
     * Ensure that the composition does not outline a dissonant interval. Outlining refers to a string of
@@ -115,7 +117,12 @@ case object CantusFirmusRules {
     * @return an either indicating success or a tuple with warnings and errors
     */
   def doesNotExceedTenth(composition: Composition): Either[CompIssues, Unit] = {
-    ???
+    val melody = voice(composition)
+    val lowestNote = melody minBy {_.rank}
+    val highestNote = melody maxBy {_.rank}
+    if (lowestNote.distance(highestNote) <= lowestNote.distance(lowestNote.major.third.perfect.octave))
+      Right()
+    else Left((Nil, List(cantusFirmusDoesNotExceedTenth)))
   }
 
   /**
@@ -124,7 +131,11 @@ case object CantusFirmusRules {
     * @return an either indicating success or a tuple with warnings and errors
     */
   def singleClimax(composition: Composition): Either[CompIssues, Unit] = {
-    ???
+    val melody = voice(composition)
+    val highestNote = melody maxBy {_.rank}
+    if (melody.count(n => n.rank == highestNote.rank) > 1)
+      Left((Nil, List(cantusFirmusSingleClimax)))
+    else Right()
   }
 
   /**
