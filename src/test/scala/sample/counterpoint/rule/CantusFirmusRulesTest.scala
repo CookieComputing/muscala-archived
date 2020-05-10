@@ -56,4 +56,47 @@ class CantusFirmusRulesTest extends FunSuite {
     assert(approachFinalTonicByStep((
       List(NoteTesting.toNoteSeq("C", "B")), MajorKey.B)).isLeft)
   }
+
+  test("A cantus firmus should only have melodic consonances") {
+    assert(melodicConsonancesOnly((
+      List(NoteTesting.toNoteSeq("C", "D", "E", "F", "G", "A", "B")), MajorKey.C)).isRight)
+    // Major/minor second
+    assert(melodicConsonancesOnly((
+      List(NoteTesting.toNoteSeq("C", "D")), MajorKey.C)).isRight)
+    assert(melodicConsonancesOnly((
+      List(NoteTesting.toNoteSeq("C", "Db")), MajorKey.C)).isRight)
+    // Major/minor third
+    assert(melodicConsonancesOnly((
+      List(NoteTesting.toNoteSeq("C", "E")), MajorKey.C)).isRight)
+    assert(melodicConsonancesOnly((
+      List(NoteTesting.toNoteSeq("C", "Eb")), MajorKey.C)).isRight)
+    // Major/minor sixth
+    assert(melodicConsonancesOnly((
+      List(NoteTesting.toNoteSeq("C", "A")), MajorKey.C)).isRight)
+    assert(melodicConsonancesOnly((
+      List(NoteTesting.toNoteSeq("C", "Ab")), MajorKey.C)).isRight)
+    // Perfect fourth
+    assert(melodicConsonancesOnly((
+      List(NoteTesting.toNoteSeq("C", "F")), MajorKey.C)).isRight)
+    // Perfect fifth
+    assert(melodicConsonancesOnly((
+      List(NoteTesting.toNoteSeq("C", "G")), MajorKey.C)).isRight)
+    // Perfect Octave
+    assert(melodicConsonancesOnly((
+      List(List(Note("C",4).get, Note("C", 5).get)), MajorKey.C)).isRight)
+
+    // Some dissonant values - Does not check enharmonically dissonant values
+    // like augmented unions to minor seconds
+    // Augmented fourth
+    assert(melodicConsonancesOnly((
+      List(NoteTesting.toNoteSeq("C", "F#")), MajorKey.C)).isLeft)
+    // Diminished fifth
+    assert(melodicConsonancesOnly((
+      List(NoteTesting.toNoteSeq("C", "Gb")), MajorKey.C)).isLeft)
+    // Sevenths - major/minor
+    assert(melodicConsonancesOnly((
+      List(NoteTesting.toNoteSeq("C", "B")), MajorKey.C)).isLeft)
+    assert(melodicConsonancesOnly((
+      List(NoteTesting.toNoteSeq("C", "Bb")), MajorKey.C)).isLeft)
+  }
 }

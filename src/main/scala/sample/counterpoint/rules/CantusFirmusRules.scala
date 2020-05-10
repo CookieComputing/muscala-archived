@@ -1,7 +1,8 @@
 package sample.counterpoint.rules
 
 import sample.counterpoint.Types._
-import interval.movement.absolute.Imports._
+import interval.qualifier.absolute.Imports._
+import note.Note
 
 /**
   * A collection of cantus firmus rules on a composition. The ordering of the
@@ -64,14 +65,38 @@ case object CantusFirmusRules {
     * Ensure that the composition only follows melodic consonances between notes. According to Open Music Theory
     * (http://openmusictheory.com/intervals.html), the following intervals are permitted:
     * - Perfect intervals
+    * - Diatonic steps (major/minor seconds)
     * - Major/minor thirds
     * - Major/minor sixths
     * @param composition the provided composition
     * @return an either indicating success or a tuple with warnings and errors
     */
   def melodicConsonancesOnly(composition: Composition): Either[CompIssues, Unit] = {
-    ???
+    // TODO: Some incredibly semantic rules may not work (e.g. an augmented unison),
+    //  until full support for diatonic intervals is here. General support using absolute intervals should work.
+    def equalDistance(n1: Note, n2: Note, qualifier: Note) = n1.distance(n2) == n1.distance(qualifier)
+    val melody = voice(composition)
+    melody.drop(1).foldLeft((List.empty[Error], melody.take(1).head)) {
+      (acc, note) => {
+        val (errors, baseNote) = acc
+        if (equalDistance(baseNote, note, baseNote.perfect.fourth) ||
+          (equalDistance(baseNote, note, baseNote.perfect.fifth)) ||
+          (equalDistance(baseNote, note, baseNote.perfect.octave)) ||
+          (equalDistance(baseNote, note, baseNote.major.second)) ||
+          (equalDistance(baseNote, note, baseNote.minor.second)) ||
+          (equalDistance(baseNote, note, baseNote.major.third)) ||
+          (equalDistance(baseNote, note, baseNote.minor.third)) ||
+          (equalDistance(baseNote, note, baseNote.major.sixth)) ||
+          (equalDistance(baseNote, note, baseNote.minor.sixth))
+        ) ((errors, note))
+        else ((errors ++ List("foo"), note))
+      }
+    } match {
+      case (Nil, _) => Right()
+      case (errors, _) => Left((Nil, errors))
+    }
   }
+
 
   /**
     * Ensure that the composition does not outline a dissonant interval. Outlining refers to a string of
