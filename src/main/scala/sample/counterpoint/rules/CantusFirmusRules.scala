@@ -16,12 +16,18 @@ import note.Note
   */
 case object CantusFirmusRules {
   val cantusFirmusSingleVoicing: Error = "cantus firmus should have one voicing"
-  val cantusFirmusInvalidLength: Error = "cantus firmus should have 8 - 16 notes"
-  val cantusFirmusInvalidTonicEdges: Error = "cantus firmus should start and end on tonic, in same register"
-  val cantusFirmusInvalidFinalStepApproach: Error = "cantus firmus should approach final tonic by step"
-  val cantusFirmusDissonantMelodicInterval: Error = "found bad interval: %s -> %s is a dissonant interval"
-  val cantusFirmusDoesNotExceedTenth: Error = "cantus firmus should not exceed a tenth in range"
-  val cantusFirmusSingleClimax: Error = "cantus firmus should have a single climax"
+  val cantusFirmusInvalidLength: Error =
+    "cantus firmus should have 8 - 16 notes"
+  val cantusFirmusInvalidTonicEdges: Error =
+    "cantus firmus should start and end on tonic, in same register"
+  val cantusFirmusInvalidFinalStepApproach: Error =
+    "cantus firmus should approach final tonic by step"
+  val cantusFirmusDissonantMelodicInterval: Error =
+    "found bad interval: %s -> %s is a dissonant interval"
+  val cantusFirmusDoesNotExceedTenth: Error =
+    "cantus firmus should not exceed a tenth in range"
+  val cantusFirmusSingleClimax: Error =
+    "cantus firmus should have a single climax"
 
   /**
     * Ensure that the composition has a single voicing
@@ -38,7 +44,8 @@ case object CantusFirmusRules {
     * @return an either indicating success or a tuple with warnings and errors
     */
   def cantusFirmusLength(composition: Composition): Either[CompIssues, Unit] =
-    if (8 <= voice(composition).length && voice(composition).length <= 16) Right()
+    if (8 <= voice(composition).length && voice(composition).length <= 16)
+      Right()
     else Left(Nil, List(cantusFirmusInvalidLength))
 
   /**
@@ -49,7 +56,8 @@ case object CantusFirmusRules {
   def beginAndEndOnTonic(composition: Composition): Either[CompIssues, Unit] = {
     val melody = voice(composition)
     val key = getKey(composition)
-    if (melody.head == melody.last && melody.head.note == key.tonic && melody.last.note == key.tonic) Right()
+    if (melody.head == melody.last && melody.head.note == key.tonic && melody.last.note == key.tonic)
+      Right()
     else Left(Nil, List(cantusFirmusInvalidTonicEdges))
   }
 
@@ -58,9 +66,12 @@ case object CantusFirmusRules {
     * @param composition the provided composition
     * @return an either indicating success or a tuple with warnings and errors
     */
-  def approachFinalTonicByStep(composition: Composition): Either[CompIssues, Unit] = {
+  def approachFinalTonicByStep(
+      composition: Composition
+  ): Either[CompIssues, Unit] = {
     val key = getKey(composition)
-    if (List(key.notes(1), key.notes.last).contains(voice(composition).dropRight(1).last.note)) Right()
+    if (List(key.notes(1), key.notes.last)
+          .contains(voice(composition).dropRight(1).last.note)) Right()
     else Left(Nil, List(cantusFirmusInvalidFinalStepApproach))
   }
 
@@ -74,28 +85,39 @@ case object CantusFirmusRules {
     * @param composition the provided composition
     * @return an either indicating success or a tuple with warnings and errors
     */
-  def melodicConsonancesOnly(composition: Composition): Either[CompIssues, Unit] = {
+  def melodicConsonancesOnly(
+      composition: Composition
+  ): Either[CompIssues, Unit] = {
     // TODO: Some incredibly semantic rules may not work (e.g. an augmented unison),
     //  until full support for diatonic intervals is here. General support using absolute intervals should work.
-    def equalDistance(n1: Note, n2: Note, qualifier: Note) = n1.distance(n2) == n1.distance(qualifier)
+    def equalDistance(n1: Note, n2: Note, qualifier: Note) =
+      n1.distance(n2) == n1.distance(qualifier)
     val melody = voice(composition)
     melody.drop(1).foldLeft((List.empty[Error], melody.take(1).head)) {
-      (acc, note) => {
-        val (errors, baseNote) = acc
-        if (equalDistance(baseNote, note, baseNote.perfect.fourth) ||
-          equalDistance(baseNote, note, baseNote.perfect.fifth) ||
-          equalDistance(baseNote, note, baseNote.perfect.octave) ||
-          equalDistance(baseNote, note, baseNote.major.second) ||
-          (equalDistance(baseNote, note, baseNote.minor.second)) ||
-          equalDistance(baseNote, note, baseNote.major.third) ||
-          equalDistance(baseNote, note, baseNote.minor.third) ||
-          equalDistance(baseNote, note, baseNote.major.sixth) ||
-          equalDistance(baseNote, note, baseNote.minor.sixth)
-        ) (errors, note)
-        else (errors ++ List(cantusFirmusDissonantMelodicInterval.format(baseNote.note, note.note)), note)
-      }
+      (acc, note) =>
+        {
+          val (errors, baseNote) = acc
+          if (equalDistance(baseNote, note, baseNote.perfect.fourth) ||
+              equalDistance(baseNote, note, baseNote.perfect.fifth) ||
+              equalDistance(baseNote, note, baseNote.perfect.octave) ||
+              equalDistance(baseNote, note, baseNote.major.second) ||
+              (equalDistance(baseNote, note, baseNote.minor.second)) ||
+              equalDistance(baseNote, note, baseNote.major.third) ||
+              equalDistance(baseNote, note, baseNote.minor.third) ||
+              equalDistance(baseNote, note, baseNote.major.sixth) ||
+              equalDistance(baseNote, note, baseNote.minor.sixth))
+            (errors, note)
+          else
+            (
+              errors ++ List(
+                cantusFirmusDissonantMelodicInterval
+                  .format(baseNote.note, note.note)
+              ),
+              note
+            )
+        }
     } match {
-      case (Nil, _) => Right()
+      case (Nil, _)    => Right()
       case (errors, _) => Left((Nil, errors))
     }
   }
@@ -107,7 +129,9 @@ case object CantusFirmusRules {
     * @param composition the provided composition
     * @return an either indicating success or a tuple with warnings and errors
     */
-  def doesNotOutlineDissonances(composition: Composition): Either[CompIssues, Unit] = {
+  def doesNotOutlineDissonances(
+      composition: Composition
+  ): Either[CompIssues, Unit] = {
     ???
   }
 
@@ -118,9 +142,11 @@ case object CantusFirmusRules {
     */
   def doesNotExceedTenth(composition: Composition): Either[CompIssues, Unit] = {
     val melody = voice(composition)
-    val lowestNote = melody minBy {_.rank}
-    val highestNote = melody maxBy {_.rank}
-    if (lowestNote.distance(highestNote) <= lowestNote.distance(lowestNote.major.third.perfect.octave))
+    val lowestNote = melody minBy { _.rank }
+    val highestNote = melody maxBy { _.rank }
+    if (lowestNote.distance(highestNote) <= lowestNote.distance(
+          lowestNote.major.third.perfect.octave
+        ))
       Right()
     else Left((Nil, List(cantusFirmusDoesNotExceedTenth)))
   }
@@ -132,7 +158,7 @@ case object CantusFirmusRules {
     */
   def singleClimax(composition: Composition): Either[CompIssues, Unit] = {
     val melody = voice(composition)
-    val highestNote = melody maxBy {_.rank}
+    val highestNote = melody maxBy { _.rank }
     if (melody.count(n => n.rank == highestNote.rank) > 1)
       Left((Nil, List(cantusFirmusSingleClimax)))
     else Right()
@@ -143,7 +169,9 @@ case object CantusFirmusRules {
     * @param composition the provided composition
     * @return an either indicating success or a tuple with warnings and errors
     */
-  def mostlyStepwiseMotion(composition: Composition): Either[CompIssues, Unit] = {
+  def mostlyStepwiseMotion(
+      composition: Composition
+  ): Either[CompIssues, Unit] = {
     ???
   }
 
@@ -161,8 +189,9 @@ case object CantusFirmusRules {
     * @param composition the provided composition
     * @return an either indicating success or a tuple with warnings and errors
     */
-  def largeLeapsAreCounteractedByContraryStepwiseMotion(composition: Composition):
-  Either[CompIssues, Unit] = {
+  def largeLeapsAreCounteractedByContraryStepwiseMotion(
+      composition: Composition
+  ): Either[CompIssues, Unit] = {
     ???
   }
 
@@ -171,7 +200,9 @@ case object CantusFirmusRules {
     * @param composition the provided composition
     * @return an either indicating success or a tuple with warnings and errors
     */
-  def twoConsecutiveLeapsOrLess(composition: Composition): Either[CompIssues, Unit] = {
+  def twoConsecutiveLeapsOrLess(
+      composition: Composition
+  ): Either[CompIssues, Unit] = {
     ???
   }
 
@@ -180,7 +211,9 @@ case object CantusFirmusRules {
     * @param composition the provided composition
     * @return an either indicating success or a tuple with warnings and errors
     */
-  def leadingToneProgressesToTonic(composition: Composition): Either[CompIssues, Unit] = {
+  def leadingToneProgressesToTonic(
+      composition: Composition
+  ): Either[CompIssues, Unit] = {
     ???
   }
 
@@ -189,7 +222,9 @@ case object CantusFirmusRules {
     * @param composition
     * @return
     */
-  def leadingToneOnlyAppearsInPenultimateBarInMinor(composition: Composition): Either[CompIssues, Unit] = {
+  def leadingToneOnlyAppearsInPenultimateBarInMinor(
+      composition: Composition
+  ): Either[CompIssues, Unit] = {
     ???
   }
 

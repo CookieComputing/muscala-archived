@@ -18,4 +18,3 @@ object Types {
   // A rule can correctly evaluate to nothing or a list of issues encountered in the stream.
   type Rule = Composition => Either[CompIssues, Unit]
 }
-

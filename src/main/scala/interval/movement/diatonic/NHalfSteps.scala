@@ -10,6 +10,7 @@ import note.Note
   */
 case class NHalfSteps(note: Note, n: Int)(implicit val key: Key)
     extends IntervalMovement {
+
   /**
     * Raises a note by n half steps
     * @return a note raised by n half steps

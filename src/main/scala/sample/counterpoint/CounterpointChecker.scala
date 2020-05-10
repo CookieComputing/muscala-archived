@@ -13,15 +13,17 @@ trait CounterpointChecker {
     * @return An either indicating that nothing is wrong, or a tuple of warnings and errors
     *         encountered in the composition
     */
-  def analyze(composition: Composition): Either[(List[Warning], List[Error]), Unit] = {
+  def analyze(
+      composition: Composition
+  ): Either[(List[Warning], List[Error]), Unit] = {
     rules.foldLeft((List[Warning](), List[Error]()))((acc, rule) => {
       rule(composition) match {
         case Left((warnings, errors)) => (acc._1 ++ warnings, acc._2 ++ errors)
-        case _ => acc
+        case _                        => acc
       }
     }) match {
       case (Nil, Nil) => Right()
-      case errors => Left(errors)
+      case errors     => Left(errors)
     }
   }
 }
