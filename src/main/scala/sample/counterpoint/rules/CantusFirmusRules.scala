@@ -28,6 +28,8 @@ case object CantusFirmusRules {
     "cantus firmus should not exceed a tenth in range"
   val cantusFirmusSingleClimax: Error =
     "cantus firmus should have a single climax"
+  val cantusFirmusManyLeaps: Warning =
+    "cantus firmus should have <= 4 leaps, found %d leaps"
 
   /**
     * Ensure that the composition has a single voicing
@@ -91,7 +93,7 @@ case object CantusFirmusRules {
     // TODO: Some incredibly semantic rules may not work (e.g. an augmented unison),
     //  until full support for diatonic intervals is here. General support using absolute intervals should work.
     def equalDistance(n1: Note, n2: Note, qualifier: Note) =
-      n1.distance(n2) == n1.distance(qualifier)
+      math.abs(n1.distance(n2)) == math.abs(n1.distance(qualifier))
     val melody = voice(composition)
     melody.drop(1).foldLeft((List.empty[Error], melody.take(1).head)) {
       (acc, note) =>
@@ -172,7 +174,27 @@ case object CantusFirmusRules {
   def mostlyStepwiseMotion(
       composition: Composition
   ): Either[CompIssues, Unit] = {
-    ???
+    // A rough guess on the number of "leaps" permissible is found here: https://www.youtube.com/watch?v=8gqL_WDeiI0
+    val melody = voice(composition)
+    val leaps = melody
+      .foldLeft((melody.head, 0)) { (acc, note) =>
+        {
+          val (baseNote, leaps) = acc
+          if (math.abs(baseNote.distance(note)) > math.abs(
+                baseNote.distance(
+                  baseNote.major.second
+                )
+              )) {
+            (note, leaps + 1)
+          } else (note, leaps)
+        }
+      }
+      ._2
+    if (leaps > 4) {
+      Left(List(cantusFirmusManyLeaps.format(leaps)), Nil)
+    } else {
+      Right()
+    }
   }
 
   /**

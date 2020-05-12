@@ -74,25 +74,43 @@ class CantusFirmusRulesTest extends FunSuite {
       List(NoteTesting.toNoteSeq("C", "D")), MajorKey.C)).isRight)
     assert(melodicConsonancesOnly((
       List(NoteTesting.toNoteSeq("C", "Db")), MajorKey.C)).isRight)
+    assert(melodicConsonancesOnly((
+      List(NoteTesting.toNoteSeq("D", "C")), MajorKey.C)).isRight)
+    assert(melodicConsonancesOnly((
+      List(NoteTesting.toNoteSeq("D", "C")), MajorKey.C)).isRight)
     // Major/minor third
     assert(melodicConsonancesOnly((
       List(NoteTesting.toNoteSeq("C", "E")), MajorKey.C)).isRight)
     assert(melodicConsonancesOnly((
       List(NoteTesting.toNoteSeq("C", "Eb")), MajorKey.C)).isRight)
+    assert(melodicConsonancesOnly((
+      List(NoteTesting.toNoteSeq("E", "C")), MajorKey.C)).isRight)
+    assert(melodicConsonancesOnly((
+      List(NoteTesting.toNoteSeq("Eb", "C")), MajorKey.C)).isRight)
     // Major/minor sixth
     assert(melodicConsonancesOnly((
       List(NoteTesting.toNoteSeq("C", "A")), MajorKey.C)).isRight)
     assert(melodicConsonancesOnly((
       List(NoteTesting.toNoteSeq("C", "Ab")), MajorKey.C)).isRight)
+    assert(melodicConsonancesOnly((
+      List(NoteTesting.toNoteSeq("A", "C")), MajorKey.C)).isRight)
+    assert(melodicConsonancesOnly((
+      List(NoteTesting.toNoteSeq("Ab", "C")), MajorKey.C)).isRight)
     // Perfect fourth
     assert(melodicConsonancesOnly((
       List(NoteTesting.toNoteSeq("C", "F")), MajorKey.C)).isRight)
+    assert(melodicConsonancesOnly((
+      List(NoteTesting.toNoteSeq("F", "C")), MajorKey.C)).isRight)
     // Perfect fifth
     assert(melodicConsonancesOnly((
       List(NoteTesting.toNoteSeq("C", "G")), MajorKey.C)).isRight)
+    assert(melodicConsonancesOnly((
+      List(NoteTesting.toNoteSeq("G", "C")), MajorKey.C)).isRight)
     // Perfect Octave
     assert(melodicConsonancesOnly((
       List(List(Note("C",4).get, Note("C", 5).get)), MajorKey.C)).isRight)
+    assert(melodicConsonancesOnly((
+      List(List(Note("C",5).get, Note("C", 4).get)), MajorKey.C)).isRight)
 
     // Some dissonant values - Does not check enharmonically dissonant values
     // like augmented unions to minor seconds
@@ -100,14 +118,24 @@ class CantusFirmusRulesTest extends FunSuite {
     assert(melodicConsonancesOnly((
       List(NoteTesting.toNoteSeq("C", "F#")), MajorKey.C)).isLeft)
     assert(melodicConsonancesOnly((
+      List(NoteTesting.toNoteSeq("F#", "C")), MajorKey.C)).isLeft)
+    assert(melodicConsonancesOnly((
       List(NoteTesting.toNoteSeq("C", "F#")), MajorKey.C)).swap.getOrElse(Nil)
     == (Nil, List(cantusFirmusDissonantMelodicInterval.format("C", "F#"))))
+    assert(melodicConsonancesOnly((
+      List(NoteTesting.toNoteSeq("F#", "C")), MajorKey.C)).swap.getOrElse(Nil)
+      == (Nil, List(cantusFirmusDissonantMelodicInterval.format("F#", "C"))))
     // Diminished fifth
     assert(melodicConsonancesOnly((
       List(NoteTesting.toNoteSeq("C", "Gb")), MajorKey.C)).isLeft)
     assert(melodicConsonancesOnly((
       List(NoteTesting.toNoteSeq("C", "Gb")), MajorKey.C)).swap.getOrElse(Nil)
     == (Nil, List(cantusFirmusDissonantMelodicInterval.format("C", "Gb"))))
+    assert(melodicConsonancesOnly((
+      List(NoteTesting.toNoteSeq("Gb", "C")), MajorKey.C)).isLeft)
+    assert(melodicConsonancesOnly((
+      List(NoteTesting.toNoteSeq("Gb", "C")), MajorKey.C)).swap.getOrElse(Nil)
+      == (Nil, List(cantusFirmusDissonantMelodicInterval.format("Gb", "C"))))
     // Sevenths - major/minor
     assert(melodicConsonancesOnly((
       List(NoteTesting.toNoteSeq("C", "B")), MajorKey.C)).isLeft)
@@ -119,6 +147,22 @@ class CantusFirmusRulesTest extends FunSuite {
     assert(melodicConsonancesOnly((
       List(NoteTesting.toNoteSeq("C", "Bb")), MajorKey.C)).swap.getOrElse(Nil)
       == (Nil, List(cantusFirmusDissonantMelodicInterval.format("C", "Bb"))))
+    assert(melodicConsonancesOnly((
+      List(NoteTesting.toNoteSeq("B", "C")), MajorKey.C)).isLeft)
+    assert(melodicConsonancesOnly((
+      List(NoteTesting.toNoteSeq("B", "C")), MajorKey.C)).swap.getOrElse(Nil)
+      == (Nil, List(cantusFirmusDissonantMelodicInterval.format("B", "C"))))
+    assert(melodicConsonancesOnly((
+      List(NoteTesting.toNoteSeq("Bb", "C")), MajorKey.C)).isLeft)
+    assert(melodicConsonancesOnly((
+      List(NoteTesting.toNoteSeq("Bb", "C")), MajorKey.C)).swap.getOrElse(Nil)
+      == (Nil, List(cantusFirmusDissonantMelodicInterval.format("Bb", "C"))))
+
+    // This rule additionally covers a rule that no unison notes are allowed for repetition
+    assert(melodicConsonancesOnly((
+      List(NoteTesting.toNoteSeq("C", "C")), MajorKey.C)).swap.getOrElse(Nil)
+      == (Nil, List(cantusFirmusDissonantMelodicInterval.format("C", "C"))))
+
   }
 
   test("A cantus firmus should not outline any dissonant notes") {
@@ -150,5 +194,14 @@ class CantusFirmusRulesTest extends FunSuite {
       .isLeft)
     assert(singleClimax((List(NoteTesting.toNoteSeq("C", "D", "E", "D", "C", "D", "E")), MajorKey.C))
       .swap.getOrElse(Nil) == (Nil, List(cantusFirmusSingleClimax)))
+  }
+
+  test("A cantus firmus should have mostly stepwise motion") {
+    assert(mostlyStepwiseMotion((List(NoteTesting.toNoteSeq("C", "D", "E", "F", "G", "F", "E", "D", "C")), MajorKey.C))
+      .isRight)
+    assert(mostlyStepwiseMotion((List(NoteTesting.toNoteSeq("C", "E", "C", "E", "C", "E", "C", "E", "C")), MajorKey.C))
+      .isLeft)
+    assert(mostlyStepwiseMotion((List(NoteTesting.toNoteSeq("C", "E", "C", "E", "C", "E", "C", "E", "C")), MajorKey.C))
+      .swap.getOrElse(Nil) == (List(cantusFirmusManyLeaps.format(8)), Nil))
   }
 }
