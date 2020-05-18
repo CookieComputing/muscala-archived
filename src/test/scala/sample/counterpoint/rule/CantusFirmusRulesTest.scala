@@ -204,4 +204,14 @@ class CantusFirmusRulesTest extends FunSuite {
     assert(mostlyStepwiseMotion((List(NoteTesting.toNoteSeq("C", "E", "C", "E", "C", "E", "C", "E", "C")), MajorKey.C))
       .swap.getOrElse(Nil) == (List(cantusFirmusManyLeaps.format(8)), Nil))
   }
+
+  test("A cantus firmus should have a contrary stepwise motion counteracting a leap >= fourth") {
+    assert(largeLeapsAreCounteractedByContraryStepwiseMotion((List(NoteTesting.toNoteSeq("C", "D")), MajorKey.C))
+      .isRight)
+    assert(largeLeapsAreCounteractedByContraryStepwiseMotion((List(NoteTesting.toNoteSeq("C", "E")), MajorKey.C))
+      .isRight)
+    assert(largeLeapsAreCounteractedByContraryStepwiseMotion((List(NoteTesting.toNoteSeq("C", "F")), MajorKey.C))
+      .isLeft)
+    // TODO: Add more complex tests to this function
+  }
 }

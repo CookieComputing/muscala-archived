@@ -30,6 +30,9 @@ case object CantusFirmusRules {
     "cantus firmus should have a single climax"
   val cantusFirmusManyLeaps: Warning =
     "cantus firmus should have <= 4 leaps, found %d leaps"
+  // Third format is an optional note
+  val cantusFirmusLeapNotCounteractedByStep: Error =
+    "cantus firmus leap not counteracted by contrary step: %s -> %s%s"
 
   /**
     * Ensure that the composition has a single voicing
@@ -214,7 +217,45 @@ case object CantusFirmusRules {
   def largeLeapsAreCounteractedByContraryStepwiseMotion(
       composition: Composition
   ): Either[CompIssues, Unit] = {
-    ???
+    val melody = voice(composition)
+    def perfectFourthOrGreater(baseNote: Note, comparisonNote: Note) =
+      math.abs(baseNote.distance(comparisonNote)) >= math.abs(
+        baseNote.distance(baseNote.perfect.fourth)
+      )
+    def checkSecondMajor(baseNote: Note, comparisonNote: Note) =
+      baseNote.distance(comparisonNote) == baseNote.distance(
+        baseNote.major.second
+      )
+    def formatCounteractError(first: Note, second: Note, third: Option[Note]) =
+      cantusFirmusLeapNotCounteractedByStep.format(
+        first.note,
+        second.note,
+        third.map(" -> " + _.note).getOrElse("")
+      )
+
+    def counteract(melody: Seq[Note]): List[Error] = {
+      melody match {
+        case first +: second +: Nil
+            if (perfectFourthOrGreater(first, second)) =>
+          List(formatCounteractError(first, second, None))
+        case first +: second +: third +: rest
+            if perfectFourthOrGreater(first, second) =>
+          val counteractedByContraryStep =
+            if (first.distance(second) > 0) checkSecondMajor(third, second)
+            else checkSecondMajor(second, third)
+          if (counteractedByContraryStep) counteract(third +: rest)
+          else
+            formatCounteractError(first, second, Some(third)) :: counteract(
+              third +: rest
+            )
+        // Not a perfect fourth or greater
+        case _ +: _ +: rest => counteract(rest)
+        case _              => Nil
+      }
+    }
+
+    val result = counteract(melody)
+    if (result.isEmpty) Right() else Left(Nil, result)
   }
 
   /**
