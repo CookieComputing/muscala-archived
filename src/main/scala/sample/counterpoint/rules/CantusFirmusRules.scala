@@ -217,15 +217,41 @@ case object CantusFirmusRules {
   def largeLeapsAreCounteractedByContraryStepwiseMotion(
       composition: Composition
   ): Either[CompIssues, Unit] = {
+    // TODO: Refactor
     val melody = voice(composition)
     def perfectFourthOrGreater(baseNote: Note, comparisonNote: Note) =
       math.abs(baseNote.distance(comparisonNote)) >= math.abs(
         baseNote.distance(baseNote.perfect.fourth)
       )
-    def checkSecondMajor(baseNote: Note, comparisonNote: Note) =
-      baseNote.distance(comparisonNote) == baseNote.distance(
-        baseNote.major.second
-      )
+    def checkStepUp(baseNote: Note, comparisonNote: Note): Boolean = {
+      // One step up according to the key
+      val keyNotes = getKey(composition).notes.map { n =>
+        Note(n).get
+      }
+      val compare = for {
+        _ <- Some(
+          math.abs(baseNote.distance(comparisonNote)) > math
+            .abs(baseNote.distance(baseNote.major.second))
+        )
+        matchingBaseNote <- keyNotes
+          .find(n =>
+            n.rank % Note.HalfStepsInOctave == baseNote.rank % Note.HalfStepsInOctave
+          )
+        matchingComparisonNote <- keyNotes
+          .find(n =>
+            n.rank % Note.HalfStepsInOctave == comparisonNote.rank % Note.HalfStepsInOctave
+          )
+        res <- Some(
+          matchingBaseNote.distance(matchingComparisonNote) == matchingBaseNote
+            .distance(matchingBaseNote.major.second) ||
+            matchingBaseNote
+              .distance(matchingComparisonNote) == matchingBaseNote
+              .distance(matchingBaseNote.minor.second)
+        )
+      } yield res
+      compare.getOrElse(false)
+    }
+
     def formatCounteractError(first: Note, second: Note, third: Option[Note]) =
       cantusFirmusLeapNotCounteractedByStep.format(
         first.note,
@@ -241,8 +267,8 @@ case object CantusFirmusRules {
         case first +: second +: third +: rest
             if perfectFourthOrGreater(first, second) =>
           val counteractedByContraryStep =
-            if (first.distance(second) > 0) checkSecondMajor(third, second)
-            else checkSecondMajor(second, third)
+            if (first.distance(second) > 0) checkStepUp(third, second)
+            else checkStepUp(second, third)
           if (counteractedByContraryStep) counteract(third +: rest)
           else
             formatCounteractError(first, second, Some(third)) :: counteract(
