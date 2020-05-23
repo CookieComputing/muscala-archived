@@ -230,4 +230,16 @@ class CantusFirmusRulesTest extends FunSuite {
       List(NoteTesting.toNoteSeq("C", "D", "E", "A", "Ab")), MajorKey.C)).swap.getOrElse(Nil) ==
       (Nil, List(cantusFirmusLeapNotCounteractedByStep.format("E", "A", " -> Ab"))))
   }
+
+  test("A cantus firmus should not have more than two consecutive leaps") {
+    assert(twoConsecutiveLeapsOrLess(
+      (List(NoteTesting.toNoteSeq("C", "D", "E", "F", "G", "A", "B")), MajorKey.C)).isRight)
+    assert(twoConsecutiveLeapsOrLess(
+      (List(NoteTesting.toNoteSeq("C", "E", "G", "F", "G", "A", "B")), MajorKey.C)).isRight)
+    assert(twoConsecutiveLeapsOrLess(
+      (List(NoteTesting.toNoteSeq("C", "E", "G", "B", "G", "A", "B")), MajorKey.C)).isLeft)
+    assert(twoConsecutiveLeapsOrLess(
+      (List(NoteTesting.toNoteSeq("C", "E", "G", "B", "G", "A", "B")), MajorKey.C)).swap.getOrElse(Nil)
+      == (Nil, List(cantusFirmusGreaterThanTwoLeaps)))
+  }
 }

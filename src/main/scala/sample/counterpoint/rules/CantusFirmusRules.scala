@@ -33,6 +33,8 @@ case object CantusFirmusRules {
   // Third format is an optional note
   val cantusFirmusLeapNotCounteractedByStep: Error =
     "cantus firmus leap not counteracted by contrary step: %s -> %s%s"
+  val cantusFirmusGreaterThanTwoLeaps: Error =
+    "cantus firmus more than two leaps"
 
   /**
     * Ensure that the composition has a single voicing
@@ -106,7 +108,7 @@ case object CantusFirmusRules {
               equalDistance(baseNote, note, baseNote.perfect.fifth) ||
               equalDistance(baseNote, note, baseNote.perfect.octave) ||
               equalDistance(baseNote, note, baseNote.major.second) ||
-              (equalDistance(baseNote, note, baseNote.minor.second)) ||
+              equalDistance(baseNote, note, baseNote.minor.second) ||
               equalDistance(baseNote, note, baseNote.major.third) ||
               equalDistance(baseNote, note, baseNote.minor.third) ||
               equalDistance(baseNote, note, baseNote.major.sixth) ||
@@ -261,8 +263,7 @@ case object CantusFirmusRules {
 
     def counteract(melody: Seq[Note]): List[Error] = {
       melody match {
-        case first +: second +: Nil
-            if (perfectFourthOrGreater(first, second)) =>
+        case first +: second +: Nil if perfectFourthOrGreater(first, second) =>
           List(formatCounteractError(first, second, None))
         case first +: second +: third +: rest
             if perfectFourthOrGreater(first, second) =>
@@ -292,7 +293,22 @@ case object CantusFirmusRules {
   def twoConsecutiveLeapsOrLess(
       composition: Composition
   ): Either[CompIssues, Unit] = {
-    ???
+    val melody = voice(composition)
+    if (melody
+          .drop(1)
+          .foldLeft((melody.take(1).head, 0, false)) { (acc, curNote) =>
+            {
+              val (prevNote, leaps, error) = acc
+              if (math.abs(prevNote.distance(curNote)) > math.abs(
+                    prevNote.distance(prevNote.major.second)
+                  )) {
+                if (leaps == 2) (curNote, leaps + 1, true)
+                else (curNote, leaps + 1, error)
+              } else (curNote, 0, error)
+            }
+          }
+          ._3) Left(Nil, List(cantusFirmusGreaterThanTwoLeaps))
+    else Right()
   }
 
   /**
