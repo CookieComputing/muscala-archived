@@ -1,11 +1,11 @@
 package interval.qualifier
 
 import interval.movement
-import interval.movement.{NHalfSteps}
+import interval.movement.NHalfSteps
 import note.Note
 
 /**
-  * An interval qualifier for minor intervals on a note.
+  * An interval qualifier for absolute perfect intervals on a note.
   *
   * @param note the note to move up from
   */

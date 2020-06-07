@@ -21,7 +21,9 @@ trait Key {
     notes.filter(note => note.last == Note.Flat || note.last == Note.Sharp)
 
   def contains(note: Note): Boolean =
-    notes.exists(keyNote => Note(keyNote).get.rank % Note.HalfStepsInOctave == note.rank % Note.HalfStepsInOctave)
+    notes.exists(keyNote =>
+      Note(keyNote).get.rank % Note.HalfStepsInOctave == note.rank % Note.HalfStepsInOctave
+    )
 
   // Convert this key to a major key
   def toMajor: MajorKey

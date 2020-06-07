@@ -1,7 +1,7 @@
 package note
 
 import interval.movement.{HalfStep, NHalfSteps, WholeStep}
-import interval.qualifier.{Major, Minor, Perfect}
+import interval.qualifier.{Augmented, Diminished, Major, Minor, Perfect}
 
 /**
   * The cornerstone of the library. Notes can be used independently to represent a single music note,
@@ -105,6 +105,18 @@ case class Note private (note: String, rank: Int) {
     * @return the perfect interval qualifier for this note
     */
   def perfect: Perfect = Perfect(this)
+
+  /**
+    * Returns an augmented interval qualifier for this note.
+    * @return the augmented interval qualifier for this note
+    */
+  def augmented: Augmented = Augmented(this)
+
+  /**
+    * Returns an diminished interval qualifier for this note.
+    * @return the diminished interval qualifier for this note
+    */
+  def diminished: Diminished = Diminished(this)
 
   /**
     * returns a major interval qualifier for this note.
