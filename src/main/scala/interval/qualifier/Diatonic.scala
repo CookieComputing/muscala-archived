@@ -1,7 +1,5 @@
 package interval.qualifier
 
-import java.text.DecimalFormatSymbols
-
 import key.Key
 import note.Note
 
@@ -69,13 +67,13 @@ object Diatonic {
       destIndex <- Some((srcIndex+n) % key.notes.length)
       destChar <- Some(key.notes(destIndex))
       destNote <- Note(destChar)
-    } yield incrementNote(destNote).copy(note=key.notes(destIndex))
+    } yield incrementNote(srcNote, destNote).copy(note=key.notes(destIndex))
 
   // Helper to convert note to option if note in key
   private def noteOption(note: Note)(implicit key: Key): Option[Note] = Some(note).filter(key.contains)
 
   @scala.annotation.tailrec
-  private def incrementNote(current: Note): Note = if (adjustRank(current) == adjustRank(n)) current else incrementNote(current.sharp)
+  private def incrementNote(current: Note, destNote: Note): Note = if (adjustRank(current) == adjustRank(destNote)) current else incrementNote(current.sharp, destNote)
 
   @scala.annotation.tailrec
   private def noteIndexOption(note: Note, i: Int = 0)(implicit key: Key): Option[Int] =
