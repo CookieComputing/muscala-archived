@@ -1,6 +1,5 @@
-package interval.movement.absolute
+package interval.movement
 
-import interval.movement.IntervalMovement
 import note.Note
 
 /**

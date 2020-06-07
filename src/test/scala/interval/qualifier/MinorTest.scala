@@ -1,7 +1,6 @@
-package interval.qualifier.absolute
+package interval.qualifier
 
 import helpers.NoteTesting
-import interval.qualifier.absolute.Imports._
 import org.scalatest.FunSuite
 
 /**

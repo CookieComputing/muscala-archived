@@ -1,6 +1,7 @@
-package interval.qualifier.absolute
+package interval.qualifier
 
-import interval.movement.absolute
+import interval.movement
+import interval.movement.{NHalfSteps}
 import note.Note
 
 /**
@@ -14,17 +15,17 @@ case class Perfect(note: Note) {
     * Represents a perfect fourth interval.
     * @return the perfect fourth interval note
     */
-  def fourth: Note = absolute.NHalfSteps(note, 5).up
+  def fourth: Note = NHalfSteps(note, 5).up
 
   /**
     * Represents a perfect fifth interval.
     * @return the perfect fifth interval note
     */
-  def fifth: Note = absolute.NHalfSteps(note, 7).up
+  def fifth: Note = movement.NHalfSteps(note, 7).up
 
   /**
     * Represents a perfect octave interval.
     * @return the perfect octave interval note
     */
-  def octave: Note = absolute.NHalfSteps(note, 12).up
+  def octave: Note = movement.NHalfSteps(note, 12).up
 }

@@ -1,8 +1,8 @@
 package interval.movement.absolute
 
 import helpers.NoteTesting
-import interval.movement.absolute
-import interval.movement.absolute.Imports._
+import interval.movement
+import interval.movement.{HalfStep, absolute}
 import note.Note
 import org.scalatest.FunSuite
 
@@ -25,13 +25,13 @@ class HalfStepTest extends FunSuite {
       .map {
         case (actualNote, expectedNote) =>
           assert(
-            absolute.HalfStep(actualNote).up.applyAccidentals == expectedNote.applyAccidentals
+            HalfStep(actualNote).up.applyAccidentals == expectedNote.applyAccidentals
           )
       }
 
     // special edge case
     assert(
-      HalfStep(Note("B").get)
+      movement.HalfStep(Note("B").get)
         .up
         .applyAccidentals == Note("C", 5).get.applyAccidentals
     )
@@ -56,7 +56,7 @@ class HalfStepTest extends FunSuite {
       .map {
         case (actualNote, expectedNote) =>
           assert(
-            absolute.HalfStep(actualNote).up.applyAccidentals == expectedNote
+            movement.HalfStep(actualNote).up.applyAccidentals == expectedNote
           )
       }
   }
@@ -76,7 +76,7 @@ class HalfStepTest extends FunSuite {
       )
       .map {
         case (actualNote, expectedNote) =>
-          assert(absolute.HalfStep(actualNote).down == expectedNote)
+          assert(movement.HalfStep(actualNote).down == expectedNote)
       }
   }
 
@@ -103,7 +103,7 @@ class HalfStepTest extends FunSuite {
       .map {
         case (actualNote, expectedNote) =>
           assert(
-            absolute.HalfStep(actualNote).down.applyAccidentals == expectedNote
+            movement.HalfStep(actualNote).down.applyAccidentals == expectedNote
           )
       }
   }
