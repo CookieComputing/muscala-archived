@@ -64,22 +64,27 @@ object Diatonic {
     for {
       srcNote <- noteOption(note)
       srcIndex <- noteIndexOption(srcNote)
-      destIndex <- Some((srcIndex+n) % key.notes.length)
+      destIndex <- Some((srcIndex + n) % key.notes.length)
       destChar <- Some(key.notes(destIndex))
       destNote <- Note(destChar)
-    } yield incrementNote(srcNote, destNote).copy(note=key.notes(destIndex))
+    } yield incrementNote(srcNote, destNote).copy(note = key.notes(destIndex))
 
   // Helper to convert note to option if note in key
-  private def noteOption(note: Note)(implicit key: Key): Option[Note] = Some(note).filter(key.contains)
+  private def noteOption(note: Note)(implicit key: Key): Option[Note] =
+    Some(note).filter(key.contains)
 
   @scala.annotation.tailrec
-  private def incrementNote(current: Note, destNote: Note): Note = if (adjustRank(current) == adjustRank(destNote)) current else incrementNote(current.sharp, destNote)
+  private def incrementNote(current: Note, destNote: Note): Note =
+    if (adjustRank(current) == adjustRank(destNote)) current
+    else incrementNote(current.sharp, destNote)
 
   @scala.annotation.tailrec
-  private def noteIndexOption(note: Note, i: Int = 0)(implicit key: Key): Option[Int] =
+  private def noteIndexOption(note: Note, i: Int = 0)(
+      implicit key: Key
+  ): Option[Int] =
     if (i >= key.notes.length) None
     else if (adjustRank(Note(key.notes(i)).get) == adjustRank(note)) Some(i)
-    else noteIndexOption(note, i+1)
+    else noteIndexOption(note, i + 1)
 
   private def adjustRank(note: Note): Int = note.rank % Note.HalfStepsInOctave
 }
