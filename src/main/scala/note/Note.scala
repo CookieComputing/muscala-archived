@@ -1,7 +1,7 @@
 package note
 
-import interval.movement.absolute.Imports
-import interval.qualifier.absolute.Imports
+import interval.movement.{HalfStep, NHalfSteps, WholeStep}
+import interval.qualifier.{Major, Minor, Perfect}
 
 /**
   * The cornerstone of the library. Notes can be used independently to represent a single music note,
@@ -81,6 +81,42 @@ case class Note private (note: String, rank: Int) {
     * @return the number of half steps these notes are apart. Positive means the other note is above this note.
     */
   def distance(other: Note): Int = other.rank - this.rank
+
+  /**
+    * Returns a whole step movement for this note.
+    * @return the whole step movement for this note.
+    */
+  def wholeStep: WholeStep = WholeStep(this)
+
+  /**
+    * Returns a half step movement for this note.
+    * @return the half step movement for this note.
+    */
+  def halfStep: HalfStep = HalfStep(this)
+
+  /**
+    * Returns a n step movement for this note.
+    * @return the whole step movement for this note.
+    */
+  def nHalfSteps(n: Int): NHalfSteps = NHalfSteps(this, n)
+
+  /**
+    * Returns a Perfect interval qualifier for this note.
+    * @return the perfect interval qualifier for this note
+    */
+  def perfect: Perfect = Perfect(this)
+
+  /**
+    * returns a major interval qualifier for this note.
+    * @return the major interval qualifier for this note
+    */
+  def major: Major = Major(this)
+
+  /**
+    * Returns a Minor interval qualifier for this note.
+    * @return the minor interval qualifier for this note
+    */
+  def minor: Minor = Minor(this)
 
   /**
     * @return the letter representing the note. A note is represented "as-is" in terms of the changes applied to it,

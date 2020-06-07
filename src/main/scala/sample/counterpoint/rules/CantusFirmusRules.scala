@@ -1,7 +1,6 @@
 package sample.counterpoint.rules
 
 import sample.counterpoint.Types._
-import interval.qualifier.absolute.Imports._
 import note.Note
 
 /**

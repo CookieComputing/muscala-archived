@@ -1,6 +1,6 @@
 package interval.movement.absolute
 
-import interval.movement.absolute.Imports._
+import interval.movement.NHalfSteps
 import note.Note
 import org.scalatest.FunSuite
 

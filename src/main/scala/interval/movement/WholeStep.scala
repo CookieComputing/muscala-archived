@@ -1,6 +1,6 @@
-package interval.movement.absolute
+package interval.movement
 
-import interval.movement.IntervalMovement
+import interval.movement
 import note.Note
 
 /**
@@ -13,11 +13,11 @@ case class WholeStep(note: Note) extends IntervalMovement {
     * Raises a note by a whole step
     * @return a note raised by a whole step
     */
-  def up: Note = NHalfSteps(note, 2).up
+  def up: Note = movement.NHalfSteps(note, 2).up
 
   /**
     * Lowers a note by a whole step
     * @return a note lowered by a whole step
     */
-  def down: Note = NHalfSteps(note, 2).down
+  def down: Note = movement.NHalfSteps(note, 2).down
 }

@@ -1,5 +1,6 @@
 package key
 
+import helpers.NoteTesting
 import org.scalatest.FunSuite
 
 /**
@@ -183,5 +184,20 @@ class MinorKeyTest extends FunSuite {
     ).map { case (majorKey, minorKey) =>
       assert(MinorKey(majorKey).get.toMajor == MajorKey(minorKey).get)
     }
+  }
+
+  test("Minor key can detect if note is in key") {
+    val key = MinorKey("A#").get
+    NoteTesting
+      .toNoteSeq("A#", "B#", "C#", "D#", "E#", "F#", "G#")
+      .map(note => assert(key.contains(note)))
+    // enharmonic
+    NoteTesting
+      .toNoteSeq("Bb", "C", "Db", "Eb", "F", "Gb", "Ab")
+      .map(note => assert(key.contains(note)))
+    // Not in key
+    NoteTesting
+      .toNoteSeq("A", "B", "D", "E", "G")
+      .map(note => assert(!key.contains(note)))
   }
 }
