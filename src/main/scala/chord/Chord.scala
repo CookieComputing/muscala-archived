@@ -15,7 +15,7 @@ trait Chord {
 
   /**
     * Represents the string version of this chord, with qualifiers attached to the end
-    * @return
+    * @return the chord in string format
     */
   def toString: String
 }

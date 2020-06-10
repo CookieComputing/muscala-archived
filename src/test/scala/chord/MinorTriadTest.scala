@@ -35,6 +35,7 @@ class MinorTriadTest extends FunSuite {
         assert(first.distance(third) == first.distance(first.minor.third))
         assert(third.distance(fifth) == third.distance(third.major.third))
         assert(first.distance(fifth) == first.distance(first.perfect.fifth))
+        assert(actual.toString == first.note + Chord.minor)
       }
   }
 

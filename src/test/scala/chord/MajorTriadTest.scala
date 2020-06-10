@@ -35,6 +35,7 @@ class MajorTriadTest extends FunSuite {
           assert(first.distance(third) == first.distance(first.major.third))
           assert(third.distance(fifth) == third.distance(third.minor.third))
           assert(first.distance(fifth) == first.distance(first.perfect.fifth))
+          assert(actual.toString == first.note + Chord.major)
         }
   }
 
