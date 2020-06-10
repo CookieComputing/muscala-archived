@@ -37,4 +37,13 @@ class MinorTriadTest extends FunSuite {
         assert(first.distance(fifth) == first.distance(first.perfect.fifth))
       }
   }
+
+  test("Invalid Minor triads should return None") {
+    assert(MinorTriad("b").isEmpty)
+    assert(MinorTriad("Q").isEmpty)
+    assert(MinorTriad("").isEmpty)
+    assert(MinorTriad("1").isEmpty)
+    assert(MinorTriad("!").isEmpty)
+    assert(MinorTriad("Ab#").isEmpty)
+  }
 }

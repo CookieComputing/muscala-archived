@@ -37,4 +37,13 @@ class MajorTriadTest extends FunSuite {
           assert(first.distance(fifth) == first.distance(first.perfect.fifth))
         }
   }
+
+  test("Invalid Major triads should return None") {
+    assert(MajorTriad("b").isEmpty)
+    assert(MajorTriad("Q").isEmpty)
+    assert(MajorTriad("").isEmpty)
+    assert(MajorTriad("1").isEmpty)
+    assert(MajorTriad("!").isEmpty)
+    assert(MajorTriad("Ab#").isEmpty)
+  }
 }
