@@ -3,6 +3,12 @@ package chord
 import key.{Key, MajorKey}
 import note.Note
 
+/**
+  * Abstract class for generating major and minor triads.
+  * @param tonic the tonic to generate the triad from
+  * @param keyFunction the major or minor key to generate with
+  * @param third the type of third that should come from the chord
+  */
 abstract class ATriad(
     tonic: String,
     private val keyFunction: String => Key,

@@ -5,7 +5,7 @@ import key.MinorKey
 /**
   * Represents a minor triad. A minor triad is defined as starting with a minor triad, followed by a major triad.
   */
-case class MinorTriad(override val tonic: String)
+case class MinorTriad private(override val tonic: String)
     extends ATriad(tonic, MinorKey(_).get, n => n.minor.third) {
   override def toString: String = tonic + Chord.minor
 }
