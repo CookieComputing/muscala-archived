@@ -36,7 +36,7 @@ sealed trait Key {
   * @param tonic the tonic of the key
   */
 final case class MajorKey private (tonic: String, notes: List[String])
-  extends Key {
+    extends Key {
 
   /**
     * @return this major key
@@ -54,7 +54,7 @@ final case class MajorKey private (tonic: String, notes: List[String])
   * Represents a minor key.
   */
 final case class MinorKey private (tonic: String, notes: List[String])
-  extends Key {
+    extends Key {
 
   /**
     * @return this major key
