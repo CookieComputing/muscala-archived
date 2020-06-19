@@ -7,6 +7,7 @@ import note.Note
   * Provides a convenient wrapper for generating a chord from a tonic given a specific key.
   */
 object DiatonicTriad {
+
   /**
     * Creates a diatonic note.
     * @param tonic the tonic that the chord is based off of
