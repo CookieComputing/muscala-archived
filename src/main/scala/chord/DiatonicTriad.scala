@@ -8,15 +8,17 @@ import note.Note
   */
 object DiatonicTriad {
   /**
-    * Creates a diatonic note
-    * @param tonic
-    * @param key
-    * @return
+    * Creates a diatonic note.
+    * @param tonic the tonic that the chord is based off of
+    * @param key the key to generate the chord from
+    * @return the diatonic chord if it exists, otherwise none
     */
-  def apply(tonic: String, key: Key): Option[Chord] =
+  def apply(tonic: String)(implicit key: Key): Option[Chord] =
     for {
       note <- Note(tonic)
-      _ <- Some(key.contains(note))
+      _ <- Some(note).filter(n => key.contains(n))
+      // Regardless of whether it's a major or minor chord, it should be defined
+      _ <- Some(tonic).filter(s => MajorTriad(s).isDefined)
     } yield {
       val index = key.notes.indexOf(tonic)
       key match {
