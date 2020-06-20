@@ -28,6 +28,7 @@ object Chord {
   val diminished = "dim"
   val sharp = Note.Sharp
   val flat = Note.Flat
+  val second = "2"
   val fourth = "4"
   val fifth = "5"
   val sixth = "6"
