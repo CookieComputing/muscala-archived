@@ -1,11 +1,35 @@
 package chord
 
-import org.scalatest.FunSuite
+import helpers.PropertyTesting
+import org.scalacheck.{Gen, Properties}
+import org.scalacheck.Prop.forAll
+import org.scalatest.{FunSuite, FunSuiteLike}
+import org.scalatestplus.scalacheck.Checkers
 
 /**
   * Unit tests for suspended second
   */
-class SuspendedSecondTest extends FunSuite {
+class SuspendedSecondTest extends Properties("SuspendedSecond") with FunSuiteLike {
+  val suspendedSecondChordGen: Gen[Chord] = PropertyTesting.chordGen(SuspendedSecond(_).get)
+
+  property("Chord pattern should be tonic => major second from root => perfect fifth from root") =
+    forAll(suspendedSecondChordGen) {
+      chord =>
+        chord.notes
+        val first = chord.notes.head
+        val second = chord.notes(1)
+        val third = chord.notes(2)
+
+        first.distance(second) == first.distance(first.major.second) &&
+        second.distance(third) == third.distance(third.perfect.fourth) &&
+        first.distance(third) == first.distance(first.perfect.fifth)
+    }
+
+  property("Chord should have the suspended second in it's toString() method") =
+    forAll(suspendedSecondChordGen) {
+      chord => chord.toString == chord.tonic + Chord.suspended + Chord.second
+    }
+
   test("suspended second should correctly return the expected notes") {
     List(
       ("A", List("A", "B", "E")),
