@@ -15,7 +15,6 @@ class SuspendedSecondTest extends Properties("SuspendedSecond") with FunSuiteLik
   property("Chord pattern should be tonic => major second from root => perfect fifth from root") =
     forAll(suspendedSecondChordGen) {
       chord =>
-        chord.notes
         val first = chord.notes.head
         val second = chord.notes(1)
         val third = chord.notes(2)
