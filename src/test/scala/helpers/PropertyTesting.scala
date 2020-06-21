@@ -15,5 +15,5 @@ object PropertyTesting {
     flats <- Gen.listOfN(numOfAccidentals, Gen.const(Note.Flat))
     sharps <- Gen.listOfN(numOfAccidentals, Gen.const(Note.Sharp))
     accidentals <- Gen.option(Gen.oneOf(flats, sharps))
-  } yield createChord(base + accidentals.foldLeft("")((acc, char) => acc + char))
+  } yield createChord(base + accidentals.getOrElse(List.empty[String]).foldLeft("")((acc, char) => acc + char))
 }
