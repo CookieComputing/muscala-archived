@@ -1,11 +1,35 @@
 package chord
 
-import org.scalatest.FunSuite
+import helpers.PropertyTesting
+import org.scalacheck.{Gen, Properties}
+import org.scalatest.{FunSuite, FunSuiteLike}
+import org.scalatestplus.scalacheck.{Checkers, ScalaCheckDrivenPropertyChecks}
 
 /**
   * Unit tests for suspended second
   */
-class SuspendedSecondTest extends FunSuite {
+class SuspendedSecondTest extends FunSuite with ScalaCheckDrivenPropertyChecks  {
+  val suspendedSecondChordGen: Gen[Chord] = PropertyTesting.chordGen(SuspendedSecond(_).get)
+
+  test("suspended second should have the expected intervals") {
+    forAll(suspendedSecondChordGen) {
+      chord =>
+        val first = chord.notes.head
+        val second = chord.notes(1)
+        val third = chord.notes(2)
+
+        assert(first.distance(second) == first.distance(first.major.second))
+        assert(second.distance(third) == third.distance(third.perfect.fourth))
+        assert(first.distance(third) == first.distance(first.perfect.fifth))
+    }
+  }
+
+  test("suspended second should have the expected chord name") {
+    forAll(suspendedSecondChordGen) {
+      chord => chord.toString == chord.tonic + Chord.suspended + Chord.second
+    }
+  }
+
   test("suspended second should correctly return the expected notes") {
     List(
       ("A", List("A", "B", "E")),
@@ -35,10 +59,6 @@ class SuspendedSecondTest extends FunSuite {
         val first = actual.notes.head
         val third = actual.notes(1)
         val fifth = actual.notes(2)
-        assert(first.distance(third) == first.distance(first.major.second))
-        assert(third.distance(fifth) == third.distance(third.perfect.fourth))
-        assert(first.distance(fifth) == first.distance(first.perfect.fifth))
-        assert(actual.toString == first.note + Chord.suspended + Chord.second)
       }
   }
 
