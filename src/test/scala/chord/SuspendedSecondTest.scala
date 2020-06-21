@@ -59,10 +59,6 @@ class SuspendedSecondTest extends FunSuite with ScalaCheckDrivenPropertyChecks  
         val first = actual.notes.head
         val third = actual.notes(1)
         val fifth = actual.notes(2)
-        assert(first.distance(third) == first.distance(first.major.second))
-        assert(third.distance(fifth) == third.distance(third.perfect.fourth))
-        assert(first.distance(fifth) == first.distance(first.perfect.fifth))
-        assert(actual.toString == first.note + Chord.suspended + Chord.second)
       }
   }
 
