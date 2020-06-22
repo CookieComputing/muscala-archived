@@ -1,5 +1,6 @@
 package chord
 
+import interval.qualifier.Diatonic
 import key.MinorKey
 
 /**
@@ -9,8 +10,8 @@ case class MinorTriad private (override val tonic: String)
     extends ATriad(
       tonic,
       MinorKey(_).get,
-      (n, k) => n.minor.third.copy(note = k.notes(2)),
-      (n, k) => n.perfect.fifth.copy(note = k.notes(4))
+      (n, k) => Diatonic.third(n)(k).get,
+      (n, k) => Diatonic.fifth(n)(k).get
     ) {
   override def toString: String = tonic + Chord.minor
 }

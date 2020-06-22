@@ -1,5 +1,6 @@
 package chord
 
+import interval.qualifier.Diatonic
 import key.{Key, MajorKey}
 
 /**
@@ -9,8 +10,8 @@ case class MajorTriad private (override val tonic: String)
     extends ATriad(
       tonic,
       MajorKey(_).get,
-      (n, k) => n.major.third.copy(note = k.notes(2)),
-      (n, k) => n.perfect.fifth.copy(note = k.notes(4))
+      (n, k) => Diatonic.third(n)(k).get,
+      (n, k) => Diatonic.fifth(n)(k).get
     ) {
   // Note that major triads typically omit the major qualifier, with the major qualifier name
   // usually appearing in a more complex chord instead
