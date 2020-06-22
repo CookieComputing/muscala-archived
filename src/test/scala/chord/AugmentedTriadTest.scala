@@ -3,7 +3,6 @@ package chord
 import helpers.PropertyTesting
 import note.Note
 import org.scalacheck.Gen
-import org.scalatest.FunSuite
 import org.scalatest.prop.TableFor2
 
 /**
@@ -40,5 +39,5 @@ class AugmentedTriadTest extends ATriadTest {
   val chordApplyFunction: String => Option[Chord] = tonic => AugmentedTriad(tonic)
   val firstToSecondDistance: (Note => Int) = root => root.distance(root.major.third)
   val secondToThirdDistance: (Note => Int) = second => second.distance(second.major.third)
-  val firstToThirdDistance: (Note => Int) = root => root.distance(root.perfect.fifth.sharp)
+  val firstToThirdDistance: (Note => Int) = root => root.distance(root.augmented.fifth)
 }

@@ -4,8 +4,6 @@ import helpers.PropertyTesting
 import note.Note
 import org.scalacheck.Gen
 import org.scalatest.prop.TableFor2
-import org.scalatest.FunSuite
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 /**
   * Unit tests for suspended second
