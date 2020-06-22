@@ -1,5 +1,6 @@
 package chord
 
+import interval.qualifier.Diatonic
 import key.MajorKey
 
 /**
@@ -9,8 +10,8 @@ case class SuspendedSecond private (tonic: String)
     extends ATriad(
       tonic,
       MajorKey(_).get,
-      (n, k) => n.major.second.copy(note = k.notes(1)),
-      (n, k) => n.perfect.fifth.copy(note = k.notes(4))
+      (n, k) => Diatonic.second(n)(k).get,
+      (n, k) => Diatonic.fifth(n)(k).get
     ) {
   override def toString: String = tonic + Chord.suspended + Chord.second
 }
