@@ -1,8 +1,8 @@
-package chord
+package chord.triad
 
+import chord.Chord
 import interval.qualifier.Diatonic
 import key.MinorKey
-import note.Note
 
 /**
   * Represents a diminished triad. A diminished chord is defined as a minor third, followed by a minor third.

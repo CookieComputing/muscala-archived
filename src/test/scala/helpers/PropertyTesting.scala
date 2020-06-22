@@ -1,6 +1,6 @@
 package helpers
 
-import chord.{Chord, SuspendedSecond}
+import chord.Chord
 import note.Note
 import org.scalacheck.Gen
 

@@ -1,7 +1,7 @@
-package chord
+package chord.triad
 
 import interval.qualifier.Diatonic
-import key.{Key, MajorKey}
+import key.MajorKey
 
 /**
   * Represents a major triad. A major chord is defined as a major third, followed by a minor third.

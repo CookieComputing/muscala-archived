@@ -1,8 +1,8 @@
-package chord
+package chord.triad
 
+import chord.Chord
 import interval.qualifier.Diatonic
 import key.MajorKey
-import note.Note
 
 /**
   * Represents an augmented triad. An augmented chord is defined as a major third, followed by a major third.

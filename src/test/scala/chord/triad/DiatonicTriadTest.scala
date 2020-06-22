@@ -1,6 +1,6 @@
-package chord
+package chord.triad
 
-import key.{Key, MajorKey, MinorKey}
+import key.{MajorKey, MinorKey}
 import org.scalatest.FunSuite
 
 /**

@@ -1,8 +1,9 @@
-package chord
+package chord.triad
 
+import chord.Chord
 import note.Note
-import org.scalacheck.Gen
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import org.scalatest.FunSuite
 import org.scalatest.prop.TableFor2
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
