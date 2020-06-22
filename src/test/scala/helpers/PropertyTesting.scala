@@ -9,6 +9,8 @@ import org.scalacheck.Gen
   */
 object PropertyTesting {
 
+  // Given a chord generating function, creates a generator that will generate arbitrary
+  // chords to be used in property testing
   val chordGen: ((String => Chord) => Gen[Chord]) = createChord => for {
     base: String <- Gen.oneOf("A", "B", "C", "D", "E", "F", "G")
     numOfAccidentals <- Gen.choose(0, 100)

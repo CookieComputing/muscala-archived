@@ -12,7 +12,9 @@ case class MajorTriad private (override val tonic: String)
       (n, k) => n.major.third.copy(note = k.notes(2)),
       (n, k) => n.perfect.fifth.copy(note = k.notes(4))
     ) {
-  override def toString: String = tonic + Chord.major
+  // Note that major triads typically omit the major qualifier, with the major qualifier name
+  // usually appearing in a more complex chord instead
+  override def toString: String = tonic
 }
 
 object MajorTriad {
