@@ -13,7 +13,7 @@ object PropertyTesting {
   // chords to be used in property testing
   val chordGen: ((String => Chord) => Gen[Chord]) = createChord => for {
     base: String <- Gen.oneOf("A", "B", "C", "D", "E", "F", "G")
-    numOfAccidentals <- Gen.choose(0, 100)
+    numOfAccidentals <- Gen.choose(0, 20)
     flats <- Gen.listOfN(numOfAccidentals, Gen.const(Note.Flat))
     sharps <- Gen.listOfN(numOfAccidentals, Gen.const(Note.Sharp))
     accidentals <- Gen.option(Gen.oneOf(flats, sharps))
