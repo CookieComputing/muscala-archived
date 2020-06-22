@@ -12,8 +12,7 @@ case class AugmentedTriad private (override val tonic: String)
       tonic,
       MajorKey(_).get,
       (n, k) => Diatonic.third(n)(k).get,
-      (n, k) =>
-        Diatonic.fifth(n)(k).get.sharp
+      (n, k) => Diatonic.fifth(n)(k).get.sharp
     ) {
   override def toString: String = tonic + Chord.augmented
 }
