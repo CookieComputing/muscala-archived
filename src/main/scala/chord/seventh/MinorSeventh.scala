@@ -20,7 +20,7 @@ case class MinorSeventh private (tonic: String)
     * Returns the minor seventh in string format.
     * @return the chord in string format
     */
-  override def toString: String = triad.toString + Chord.minor + Chord.seventh
+  override def toString: String = triad.toString + Chord.seventh
 }
 
 object MinorSeventh {
