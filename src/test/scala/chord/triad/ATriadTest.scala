@@ -34,7 +34,7 @@ abstract class ATriadTest() extends FunSuite with ScalaCheckPropertyChecks {
     }
   }
 
-  test("suspended second should have the expected chord name") {
+  test("the triad should have the expected chord name") {
     forAll(chordGenerator) {
       chord => chord.toString == expectedChordName(chord.tonic)
     }
