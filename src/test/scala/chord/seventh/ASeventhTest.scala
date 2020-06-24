@@ -39,8 +39,8 @@ abstract class ASeventhTest extends FunSuite with ScalaCheckPropertyChecks{
 
   test("the seventh chord should return the expected notes") {
     forAll(chordNotes) { (tonic: String, notes: List[String]) =>
-      val note = chordApplyFunction(note).get
-      assert(note.notes.map(_.note) == notes)
+      val chord = chordApplyFunction(tonic).get
+      assert(chord.notes.map(_.note) == notes)
     }
   }
 
