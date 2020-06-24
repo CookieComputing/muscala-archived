@@ -1,8 +1,9 @@
-package chord
+package chord.triad
 
+import chord.Chord
 import note.Note
-import org.scalacheck.Gen
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import org.scalatest.FunSuite
 import org.scalatest.prop.TableFor2
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -33,7 +34,7 @@ abstract class ATriadTest() extends FunSuite with ScalaCheckPropertyChecks {
     }
   }
 
-  test("suspended second should have the expected chord name") {
+  test("the triad should have the expected chord name") {
     forAll(chordGenerator) {
       chord => chord.toString == expectedChordName(chord.tonic)
     }

@@ -1,5 +1,6 @@
-package chord
+package chord.triad
 
+import chord.Chord
 import helpers.PropertyTesting
 import note.Note
 import org.scalacheck.Gen

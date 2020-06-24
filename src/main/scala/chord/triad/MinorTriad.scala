@@ -1,5 +1,6 @@
-package chord
+package chord.triad
 
+import chord.Chord
 import interval.qualifier.Diatonic
 import key.MinorKey
 

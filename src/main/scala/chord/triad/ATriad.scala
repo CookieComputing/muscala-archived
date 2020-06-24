@@ -1,6 +1,7 @@
-package chord
+package chord.triad
 
-import key.{Key, MajorKey}
+import chord.Chord
+import key.Key
 import note.Note
 
 /**
