@@ -18,15 +18,20 @@ abstract class ASeventhTest extends FunSuite with ScalaCheckPropertyChecks{
   val chordApplyFunction: String => Option[SeventhChord]
   val expectedTriad: String => Chord
 
-  val expectedFirstToSeventhDistance: (Note => Int)
+  val expectedRootIntervals: SeventhChord => Boolean
+  val expectedConsecutiveThirdIntervals: SeventhChord => Boolean
 
-  test("the seventh chord should have the expected intervals") {
+  test("the intervals from root should be correct") {
     forAll(chordGenerator) {
       chord =>
-        val root = chord.notes.head
-        val seventh = chord.notes.last
-        assert(chord.triad == expectedTriad(chord.tonic))
-        assert(root.distance(seventh) == expectedFirstToSeventhDistance(root))
+        assert(expectedRootIntervals(chord))
+    }
+  }
+
+  test("the quality of consecutive thirds should be correct") {
+    forAll(chordGenerator) {
+      chord =>
+        assert(expectedConsecutiveThirdIntervals(chord))
     }
   }
 

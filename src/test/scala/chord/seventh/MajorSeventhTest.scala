@@ -39,5 +39,26 @@ class MajorSeventhTest extends ASeventhTest {
   val expectedChordName: String => String = tonic => tonic + Chord.major + Chord.seventh
   val chordApplyFunction: String => Option[SeventhChord] = tonic => MajorSeventh(tonic)
   val expectedTriad: String => Chord = MajorTriad(_).get
-  val expectedFirstToSeventhDistance: (Note => Int) = root => root.distance(root.major.seventh)
+
+  val expectedRootIntervals: SeventhChord => Boolean = {
+    chord =>
+      val root = chord.notes.head
+      val third = chord.notes(1)
+      val fifth = chord.notes(2)
+      val seventh = chord.notes.last
+      root.distance(third) == root.distance(root.major.third) &&
+      root.distance(fifth) == root.distance(root.perfect.fifth) &&
+      root.distance(seventh) == root.distance(root.major.seventh)
+  }
+
+  val expectedConsecutiveThirdIntervals: SeventhChord => Boolean = {
+    chord =>
+      val root = chord.notes.head
+      val third = chord.notes(1)
+      val fifth = chord.notes(2)
+      val seventh = chord.notes.last
+      root.distance(third) == root.distance(root.major.third) &&
+        third.distance(fifth) == third.distance(third.minor.third) &&
+        fifth.distance(seventh) == fifth.distance(fifth.major.third)
+  }
 }
