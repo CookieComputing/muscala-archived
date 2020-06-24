@@ -2,6 +2,7 @@ package chord.seventh
 
 import chord.Chord
 import helpers.PropertyTesting
+import note.Note
 import org.scalacheck.Gen
 import org.scalatest.FunSuite
 import org.scalatest.prop.TableFor2
@@ -22,4 +23,8 @@ class MajorSeventhTest extends FunSuite with ScalaCheckPropertyChecks{
     ("F", ("F", "A", "C", "E")),
     ("G", ("G", "B", "D", "F#")),
   )
+  val expectedChordName: String => String = tonic => tonic + Chord.augmented
+  val chordApplyFunction: String => Option[Chord] = tonic => MajorSeventh(tonic)
+  val triadDistances: Chord => Boolean = ???
+  val firstToFourthDistance: (Note => Int) = root => root.distance(root.augmented.fifth)
 }

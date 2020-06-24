@@ -3,19 +3,18 @@ package chord.seventh
 import chord.Chord
 import chord.triad.MajorTriad
 import interval.qualifier.Diatonic
-import key.{Key, MajorKey}
-import note.Note
+import key.MajorKey
 
 /**
   * Represents a major seventh. A major seventh is a major triad with a major seventh interval.
   */
-case class MajorSeventh private (tonic: String) extends SeventhChord {
-  private val key: Key = MajorKey(tonic).get
-  override val triad: Chord = MajorTriad(tonic).get
-  override val notes: List[Note] = {
-    val root = triad.notes.head
-    triad.notes ++ List(Diatonic.seventh(root)(key))
-  }
+case class MajorSeventh private (override val tonic: String)
+    extends ASeventh(
+      tonic,
+      n => MajorTriad(n).get,
+      n => MajorKey(n).get,
+      (n, k) => Diatonic.seventh(n)(k).get
+    ) {
 
   /**
     * Returns the major seventh in string format. Since major triads do not have
