@@ -10,14 +10,20 @@ import note.Note
 case class Diminished(note: Note) {
 
   /**
-    * Represents an diminished fourth interval.
+    * Represents a diminished fourth interval.
     * @return the diminished fourth interval note
     */
   def fourth: Note = Perfect(note).fourth.flat
 
   /**
-    * Represents an diminished fifth interval.
+    * Represents a diminished fifth interval.
     * @return the diminished fifth interval note
     */
   def fifth: Note = Perfect(note).fifth.flat
+
+  /**
+    * Represents a diminished seventh interval.
+    * @return the diminished seventh interval note
+    */
+  def seventh: Note = Minor(note).seventh.flat
 }

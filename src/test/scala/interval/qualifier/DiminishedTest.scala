@@ -60,4 +60,31 @@ case class DiminishedTest() extends FunSuite {
       }
   }
 
+  test("diminished seventh natural note should work as expected") {
+    NoteTesting
+      .toNoteTupleSeq(
+        ("A", "Gb"),
+        ("B", "Ab"),
+        ("C", "A"), // Note that this is a case where the naive solution for note correction fails.
+        ("D", "Cb"),
+        ("E", "Db"),
+        ("F", "D"), // Note that this is a case where the naive solution for note correction fails.
+        ("G", "Fb")
+      )
+      .map {
+        case (actualNote, expectedNote) =>
+          assert(actualNote.diminished.seventh.toString == expectedNote.toString)
+      }
+  }
+
+  test("diminished seventh notes are a distance of 9 half steps away") {
+    NoteTesting.naturalNoteSeq ++ NoteTesting.accidentalNoteSeq
+      .map { note =>
+        (note, note.diminished.seventh)
+      }
+      .map {
+        case (note, diminishedFifth) =>
+          assert(note.distance(diminishedFifth) == 9)
+      }
+  }
 }

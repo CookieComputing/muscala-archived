@@ -3,7 +3,6 @@ package chord.seventh
 import chord.Chord
 import chord.triad.MajorTriad
 import helpers.PropertyTesting
-import note.Note
 import org.scalacheck.Gen
 import org.scalatest.prop.TableFor2
 
