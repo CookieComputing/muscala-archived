@@ -17,7 +17,7 @@ case class DiminishedSeventh private (tonic: String)
   ) {
 
   /**
-    * Returns the minor seventh in string format.
+    * Returns the diminished seventh in string format.
     * @return the chord in string format
     */
   override def toString: String = triad.toString + Chord.seventh
