@@ -1,7 +1,7 @@
 package chord.seventh
 
 import chord.Chord
-import chord.triad.{DiminishedTriad, MinorTriad}
+import chord.triad.DiminishedTriad
 import interval.qualifier.Diatonic
 import key.MinorKey
 

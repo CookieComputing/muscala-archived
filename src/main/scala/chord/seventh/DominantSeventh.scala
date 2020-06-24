@@ -17,7 +17,7 @@ case class DominantSeventh private (override val tonic: String)
     ) {
 
   /**
-    * Returns the major seventh in string format.
+    * Returns the dominant seventh in string format.
     * @return the chord in string format
     */
   override def toString: String = triad.toString + Chord.seventh
