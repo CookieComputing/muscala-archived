@@ -15,13 +15,18 @@ object PropertyTesting {
     base <- Gen.oneOf(NoteTesting.naturalNoteSeq)
   } yield base
 
+  // Generates a valid note string with possible sharps and/or flats
+  def validNoteStringGen: Gen[String] = for {
+    base <- Gen.oneOf(NoteTesting.naturalNoteSeq.map(_.note))
+    numOfAccidentals <- Gen.choose(0, 20)
+    accidentals <- Gen.listOfN(numOfAccidentals, Gen.oneOf(Note.Sharp, Note.Flat))
+  } yield base + accidentals.foldLeft("")((acc, char) => acc + char)
+
   // Generates a random note of random octave, with possible sharps or flats.
   def noteGen: Gen[Note] = for {
-    base <- Gen.oneOf(NoteTesting.naturalNoteSeq.map(_.note))
+    noteString <- validNoteStringGen
     octave <- arbitrary[Int]
-    numOfAccidentals <- Gen.choose(0, 20)
-    accidentals <- Gen.pick(numOfAccidentals, List(Note.Sharp, Note.Flat))
-  } yield Note(base + accidentals.foldLeft("")((acc, char) => acc + char), octave).get
+  } yield Note(noteString, octave).get
 
   // Given a chord generating function, creates a generator that will generate arbitrary
   // chords to be used in property testing

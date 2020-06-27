@@ -1,69 +1,80 @@
 package note
 
-import helpers.NoteTesting
+import helpers.{NoteTesting, PropertyTesting}
+import org.scalacheck.Gen
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.FunSuite
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+
+import scala.util.Random
 
 // Unit tests for the note.Note case class, as well as examples of how to use the class
-class NoteTest extends FunSuite {
-  test("Notes with letters in apply() should work") {
-    assert(
-      List("A", "B", "C", "D", "E", "F", "G")
-        .map { Note(_) }
-        .count(_.isDefined) == 7
-    )
-  }
-
-  test("Notes with the same letter and octave should be the same") {
-    NoteTesting
-      .toNoteTupleSeq(
-        ("A", "A"),
-        ("B", "B"),
-        ("C", "C"),
-        ("D", "D"),
-        ("E", "E"),
-        ("F", "F"),
-        ("G", "G")
-      )
-      .map {
-        case (actualNote, expectedNote) => assert(actualNote == expectedNote)
-      }
+class NoteTest extends FunSuite with ScalaCheckPropertyChecks {
+  test("Notes with any combination of sharps or flats are valid") {
+    forAll(PropertyTesting.validNoteStringGen) {
+      note =>
+        assert(Note(note).isDefined)
+    }
   }
 
   test("Flats and sharps should cancel each other out") {
-    List(
-      (Note.A.sharp.flat, Note.A),
-      (Note.B.sharp.sharp.flat.flat, Note.B),
-      (Note.C.flat.sharp.flat.sharp, Note.C),
-      (Note.D.flat.flat.sharp.sharp, Note.D)
-    ).map {
-      case (actualNote: Note, expectedNote: Note) =>
-        assert(actualNote enharmonic expectedNote)
+    val balancedAccidentNoteGen: Note => Gen[Note] = note => for {
+      numberOfAccidentals <- Gen.chooseNum(1, 100)
+      flats <- Gen.listOfN(numberOfAccidentals, Gen.const(Note.Flat))
+      sharps <- Gen.listOfN(numberOfAccidentals, Gen.const(Note.Sharp))
+    } yield {
+      val accidents = Random.shuffle(flats ++ sharps)
+      accidents.foldLeft(note){
+        (acc, accident) => accident match {
+          case Note.Flat => acc.flat
+          case Note.Sharp => acc.sharp
+        }
+      }
+    }
+
+    forAll(PropertyTesting.noteGen) {
+      note => forAll(balancedAccidentNoteGen(note)) {
+          balancedNote =>
+            assert(note enharmonic balancedNote)
+        }
     }
   }
 
   test("A sharp/flat note should not equal the original note") {
-    List(
-      (Note.A.sharp, Note.A),
-      (Note.A.flat, Note.A),
-      (Note.B.sharp, Note.B),
-      (Note.B.flat, Note.B),
-      (Note.C.sharp, Note.C),
-      (Note.C.flat, Note.C),
-      (Note.D.sharp, Note.D),
-      (Note.D.flat, Note.D),
-      (Note.E.sharp, Note.E),
-      (Note.E.flat, Note.E),
-      (Note.F.sharp, Note.F),
-      (Note.F.flat, Note.F),
-      (Note.G.sharp, Note.G),
-      (Note.G.flat, Note.G)
-    ).map {
-      case (accidentalNote: Note, naturalNote: Note) =>
-        assert(accidentalNote != naturalNote)
+    val offsetNoteGen: Note => Gen[Note] = note => for {
+      numOfAccidents <- Gen.chooseNum(1, 100)
+      sharps <- Gen.listOfN(numOfAccidents, Note.Sharp)
+      flats <- Gen.listOfN(numOfAccidents, Note.Flat)
+      accidents <- Gen.oneOf(sharps, flats)
+    } yield {
+      accidents.foldLeft(note) {
+        (acc, char) => char match {
+          case Note.Sharp => acc.sharp
+          case Note.Flat => note.flat
+        }
+      }
+    }
+
+    forAll(PropertyTesting.noteGen) {
+      note => forAll(offsetNoteGen(note)) {
+        offsetNote =>
+          assert(note != offsetNote)
+      }
     }
   }
 
   test("Enharmonic notes should be enharmonic, but not equal") {
+    val accidentalNoteGen: (Note, Char, Int) => Gen[Note] = (note, accident, times) => for {
+      accidents <- Gen.listOfN(times, Gen.const(accident))
+    } yield {
+      accidents.foldLeft(note) {
+        (acc, char) => char match {
+          case Note.Sharp => acc.sharp
+          case(Note.Flat) => acc.flat
+        }
+      }
+    }
+
     // Since C is the start of the octave, we do not check B# and C (or vice versa) since they are on opposite edges
     // of the octave
     List(
@@ -91,7 +102,10 @@ class NoteTest extends FunSuite {
   }
 
   test("Multiple accidentals are allowed in note.Note apply() method") {
-    assert(List(Note("C#"), Note("C##"), Note("C#b#b")).count(_.isDefined) == 3)
+    forAll(PropertyTesting.validNoteStringGen) {
+      note =>
+        assert(Note(note).isDefined)
+    }
   }
 
   test(
@@ -310,12 +324,28 @@ class NoteTest extends FunSuite {
   }
 
   test("Sharping a B to a C should increase the octave by one") {
-    assert(Note.B.octave == 4)
-    assert(Note.B.sharp.applyAccidentals.octave == 5)
+    val bNoteGen: Gen[Note] = for {
+      bNote <- Gen.const("B")
+      octave <- Gen.chooseNum(-1000, 0)
+    } yield Note(bNote, octave).get
+
+    forAll(bNoteGen) {
+      note =>
+        println(note.note, note.octave, note.rank)
+        println("Sharped", note.sharp.note, note.sharp.octave, note.sharp.rank)
+
+        assert(note.sharp.octave == note.octave + 1)
+    }
   }
 
   test("Invalid note construction should return None") {
-    assert(Note("f").isEmpty)
-    assert(Note("F####bbb1").isEmpty)
+    val invalidNoteGen: Gen[String] =
+      arbitrary[String].filterNot(s =>
+        "[A-G][#|b]*".matches(s))
+
+    forAll(invalidNoteGen) {
+      invalidNote =>
+        assert(Note(invalidNote).isEmpty)
+    }
   }
 }
