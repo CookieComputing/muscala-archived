@@ -1,15 +1,16 @@
 package interval.movement.absolute
 
-import helpers.NoteTesting
+import helpers.{NoteTesting, PropertyTesting}
 import interval.movement
 import interval.movement.{HalfStep, absolute}
 import note.Note
 import org.scalatest.FunSuite
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 /**
   * Unit tests for half step movements.
   */
-class HalfStepTest extends FunSuite {
+class HalfStepTest extends FunSuite with ScalaCheckPropertyChecks{
   test(
     "Movements from natural notes up should result in accidentals being created"
   ) {
@@ -113,6 +114,14 @@ class HalfStepTest extends FunSuite {
       case HalfStep(note) => assert(note == Note.A)
       case _ =>
         assert(false, "expected half step when calling halfStep() method")
+    }
+  }
+
+  test("A half step should be a distance of one away") {
+    forAll(PropertyTesting.noteGen) {
+      note =>
+        assert(note.distance(note.halfStep.up) == 1)
+        assert(note.distance(note.halfStep.down) == -1)
     }
   }
 }

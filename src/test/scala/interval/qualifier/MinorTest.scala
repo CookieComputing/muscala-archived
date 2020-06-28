@@ -1,12 +1,13 @@
 package interval.qualifier
 
-import helpers.NoteTesting
+import helpers.{NoteTesting, PropertyTesting}
 import org.scalatest.FunSuite
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 /**
   * Represents unit tests for the minor interval qualifier
   */
-class MinorTest extends FunSuite {
+class MinorTest extends FunSuite with ScalaCheckPropertyChecks {
   test("minor second natural note should work as expected") {
     NoteTesting
       .toNoteTupleSeq(
@@ -27,14 +28,10 @@ class MinorTest extends FunSuite {
   }
 
   test("minor second notes are a distance of 1 half step away") {
-    NoteTesting.naturalNoteSeq ++ NoteTesting.accidentalNoteSeq
-      .map { note =>
-        (note, note.minor.second)
-      }
-      .map {
-        case (note, minorSecond) =>
-          assert(note.distance(minorSecond) == 1)
-      }
+    forAll(PropertyTesting.noteGen) {
+      note =>
+      assert(note.distance(note.minor.second) == 1)
+    }
   }
 
   test("minor third natural note should work as expected") {
@@ -55,14 +52,10 @@ class MinorTest extends FunSuite {
   }
 
   test("minor third notes are a distance of 3 half steps away") {
-    NoteTesting.naturalNoteSeq ++ NoteTesting.accidentalNoteSeq
-      .map { note =>
-        (note, note.minor.third)
-      }
-      .map {
-        case (note, minorThird) =>
-          assert(note.distance(minorThird) == 3)
-      }
+    forAll(PropertyTesting.noteGen) {
+      note =>
+        assert(note.distance(note.minor.third) == 3)
+    }
   }
 
   test("minor sixth natural note should work as expected") {
@@ -83,14 +76,10 @@ class MinorTest extends FunSuite {
   }
 
   test("minor sixth notes are a distance of 8 half steps away") {
-    NoteTesting.naturalNoteSeq ++ NoteTesting.accidentalNoteSeq
-      .map { note =>
-        (note, note.minor.sixth)
-      }
-      .map {
-        case (note, minorSixth) =>
-          assert(note.distance(minorSixth) == 8)
-      }
+    forAll(PropertyTesting.noteGen) {
+      note =>
+        assert(note.distance(note.minor.sixth) == 8)
+    }
   }
 
   test("minor seventh natural note should work as expected") {
@@ -111,13 +100,9 @@ class MinorTest extends FunSuite {
   }
 
   test("minor seventh notes are a distance of 10 half steps away") {
-    NoteTesting.naturalNoteSeq ++ NoteTesting.accidentalNoteSeq
-      .map { note =>
-        (note, note.minor.seventh)
-      }
-      .map {
-        case (note, minorSixth) =>
-          assert(note.distance(minorSixth) == 10)
-      }
+    forAll(PropertyTesting.noteGen) {
+      note =>
+        assert(note.distance(note.minor.seventh) == 10)
+    }
   }
 }
