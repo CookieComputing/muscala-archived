@@ -64,17 +64,6 @@ class NoteTest extends FunSuite with ScalaCheckPropertyChecks {
   }
 
   test("Enharmonic notes should be enharmonic, but not equal") {
-    val accidentalNoteGen: (Note, Char, Int) => Gen[Note] = (note, accident, times) => for {
-      accidents <- Gen.listOfN(times, Gen.const(accident))
-    } yield {
-      accidents.foldLeft(note) {
-        (acc, char) => char match {
-          case Note.Sharp => acc.sharp
-          case(Note.Flat) => acc.flat
-        }
-      }
-    }
-
     // Since C is the start of the octave, we do not check B# and C (or vice versa) since they are on opposite edges
     // of the octave
     List(
@@ -275,65 +264,29 @@ class NoteTest extends FunSuite with ScalaCheckPropertyChecks {
   }
 
   test("Enharmonic notes have a distance of 0 half steps away") {
-    List(Note.A, Note.B, Note.C, Note.D, Note.E, Note.F)
-      .map { note =>
-        (note, note)
-      }
-      .map { case (note1, note2) => assert(note1.distance(note2) == 0) }
+    forAll(PropertyTesting.noteGen) {
+      note =>
+        assert(note.enharmonic(note))
+        assert(note.distance(note) == 0)
+    }
   }
 
   test("Accidentals have a distance of one half step away") {
-    // sharped notes are above the original note
-    List(Note.A, Note.B, Note.C, Note.D, Note.E, Note.F)
-      .map { note =>
-        (note, note.sharp)
-      }
-      .map { case (note1, note2) => assert(note1.distance(note2) == 1) }
-
-    // flatted notes are below the original note
-    List(Note.A, Note.B, Note.C, Note.D, Note.E, Note.F)
-      .map { note =>
-        (note, note.flat)
-      }
-      .map { case (note1, note2) => assert(note1.distance(note2) == -1) }
-  }
-
-  test(
-    "Accidentals that have been cancelled should have the same distance as the original note"
-  ) {
-    List(Note.A, Note.B, Note.C, Note.D, Note.E, Note.F)
-      .map { note =>
-        (note, note.sharp.flat)
-      }
-      .map { case (note1, note2) => assert(note1.distance(note2) == 0) }
-
-    List(Note.A, Note.B, Note.C, Note.D, Note.E, Note.F)
-      .map { note =>
-        (note, note.flat.sharp)
-      }
-      .map { case (note1, note2) => assert(note1.distance(note2) == 0) }
-
-  }
-
-  test("Octaves have a distance of 12 half steps away") {
-    List(Note.A, Note.B, Note.C, Note.D, Note.E, Note.F)
-      .map { note =>
-        (note, Note(note.note, note.octave + 1).get)
-      }
-      .map { case (note1, note2) => assert(note1.distance(note2) == 12) }
+    forAll(PropertyTesting.noteGen) {
+      note =>
+        assert(note.distance(note.sharp) == 1)
+        assert(note.distance(note.flat) == -1)
+    }
   }
 
   test("Sharping a B to a C should increase the octave by one") {
     val bNoteGen: Gen[Note] = for {
       bNote <- Gen.const("B")
-      octave <- Gen.chooseNum(-1000, 0)
+      octave <- Gen.chooseNum(-100000, 100000)
     } yield Note(bNote, octave).get
 
     forAll(bNoteGen) {
       note =>
-        println(note.note, note.octave, note.rank)
-        println("Sharped", note.sharp.note, note.sharp.octave, note.sharp.rank)
-
         assert(note.sharp.octave == note.octave + 1)
     }
   }

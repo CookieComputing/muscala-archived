@@ -19,7 +19,9 @@ case class Note private (note: String, rank: Int) {
     *
     * @return the note's octave
     */
-  def octave: Int = rank / Note.HalfStepsInOctave
+  def octave: Int =
+    if (rank >= 0) rank / Note.HalfStepsInOctave
+    else -Math.ceil(math.abs(rank).toDouble / Note.HalfStepsInOctave).toInt
 
   /**
     * Generates a note that is raised by one half step.

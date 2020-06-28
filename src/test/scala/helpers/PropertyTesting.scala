@@ -17,7 +17,7 @@ object PropertyTesting {
 
   // Generates a valid note string with possible sharps and/or flats
   def validNoteStringGen: Gen[String] = for {
-    base <- Gen.oneOf(NoteTesting.naturalNoteSeq.map(_.note))
+    base <- Gen.oneOf("A", "B", "C", "D", "E", "F", "G")
     numOfAccidentals <- Gen.choose(0, 20)
     accidentals <- Gen.listOfN(numOfAccidentals, Gen.oneOf(Note.Sharp, Note.Flat))
   } yield base + accidentals.foldLeft("")((acc, char) => acc + char)
