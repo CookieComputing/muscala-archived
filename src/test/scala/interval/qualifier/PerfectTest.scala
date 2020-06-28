@@ -1,12 +1,13 @@
 package interval.qualifier
 
-import helpers.NoteTesting
+import helpers.{NoteTesting, PropertyTesting}
 import org.scalatest.FunSuite
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 /**
   * Represents unit tests for the perfect interval qualifier
   */
-class PerfectTest extends FunSuite {
+class PerfectTest extends FunSuite with ScalaCheckPropertyChecks {
   test("perfect fourth natural note should work as expected") {
     NoteTesting
       .toNoteTupleSeq(
@@ -26,14 +27,10 @@ class PerfectTest extends FunSuite {
   }
 
   test("perfect fourth notes are a distance of 5 half steps away") {
-    NoteTesting.naturalNoteSeq ++ NoteTesting.accidentalNoteSeq
-      .map { note =>
-        (note, note.perfect.fourth)
-      }
-      .map {
-        case (note, perfectFourth) =>
-          assert(note.distance(perfectFourth) == 5)
-      }
+    forAll(PropertyTesting.noteGen) {
+      note =>
+        assert(note.distance(note.perfect.fourth) == 5)
+    }
   }
 
   test("perfect fifth natural note should work as expected") {
@@ -54,14 +51,10 @@ class PerfectTest extends FunSuite {
   }
 
   test("perfect fifth notes are a distance of 7 half steps away") {
-    NoteTesting.naturalNoteSeq ++ NoteTesting.accidentalNoteSeq
-      .map { note =>
-        (note, note.perfect.fifth)
-      }
-      .map {
-        case (note, perfectFifth) =>
-          assert(note.distance(perfectFifth) == 7)
-      }
+    forAll(PropertyTesting.noteGen) {
+      note =>
+        assert(note.distance(note.perfect.fifth) == 7)
+    }
   }
 
   test("perfect octave natural note should work as expected") {
@@ -76,24 +69,9 @@ class PerfectTest extends FunSuite {
   }
 
   test("perfect octave notes are a distance of 12 half steps away") {
-    NoteTesting.naturalNoteSeq ++ NoteTesting.accidentalNoteSeq
-      .map { note =>
-        (note, note.perfect.octave)
-      }
-      .map {
-        case (note, perfectOctave) =>
-          assert(note.distance(perfectOctave) == 12)
-      }
-  }
-
-  test("perfect octave notes are exactly one octave apart") {
-    NoteTesting.naturalNoteSeq ++ NoteTesting.accidentalNoteSeq
-      .map { note =>
-        (note, note.perfect.octave)
-      }
-      .map {
-        case (note, perfectOctave) =>
-          assert(perfectOctave.octave == note.octave + 1)
-      }
+    forAll(PropertyTesting.noteGen) {
+      note =>
+        assert(note.distance(note.perfect.octave) == 12)
+    }
   }
 }

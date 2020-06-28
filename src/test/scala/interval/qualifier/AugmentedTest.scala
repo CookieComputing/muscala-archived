@@ -1,9 +1,10 @@
 package interval.qualifier
 
-import helpers.NoteTesting
+import helpers.{NoteTesting, PropertyTesting}
 import org.scalatest.FunSuite
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-class AugmentedTest extends FunSuite {
+class AugmentedTest extends FunSuite with ScalaCheckPropertyChecks {
   test("augmented fourth natural note should work as expected") {
     NoteTesting
       .toNoteTupleSeq(
@@ -22,14 +23,10 @@ class AugmentedTest extends FunSuite {
   }
 
   test("augmented fourth notes are a distance of 6 half steps away") {
-    NoteTesting.naturalNoteSeq ++ NoteTesting.accidentalNoteSeq
-      .map { note =>
-        (note, note.augmented.fourth)
-      }
-      .map {
-        case (note, augmentedFourth) =>
-          assert(note.distance(augmentedFourth) == 6)
-      }
+    forAll(PropertyTesting.noteGen) {
+      note =>
+        assert(note.distance(note.augmented.fourth) == 6)
+    }
   }
 
   test("augmented fifth natural note should work as expected") {
@@ -50,13 +47,9 @@ class AugmentedTest extends FunSuite {
   }
 
   test("augmented fifth notes are a distance of 8 half steps away") {
-    NoteTesting.naturalNoteSeq ++ NoteTesting.accidentalNoteSeq
-      .map { note =>
-        (note, note.augmented.fifth)
-      }
-      .map {
-        case (note, augmentedFifth) =>
-          assert(note.distance(augmentedFifth) == 8)
-      }
+    forAll(PropertyTesting.noteGen) {
+    note =>
+        assert(note.distance(note.augmented.fifth) == 8)
+    }
   }
 }

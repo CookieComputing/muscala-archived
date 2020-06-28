@@ -1,12 +1,13 @@
 package interval.qualifier
 
-import helpers.NoteTesting
+import helpers.{NoteTesting, PropertyTesting}
 import org.scalatest.FunSuite
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 /**
   * Represents unit tests for the major interval qualifier
   */
-class MajorTest extends FunSuite {
+class MajorTest extends FunSuite with ScalaCheckPropertyChecks {
   test("major second natural note should work as expected") {
     NoteTesting
       .toNoteTupleSeq(
@@ -24,15 +25,11 @@ class MajorTest extends FunSuite {
       }
   }
 
-  test("major second notes are a distance of 1 whole steps away") {
-    NoteTesting.naturalNoteSeq ++ NoteTesting.accidentalNoteSeq
-      .map { note =>
-        (note, note.major.second)
-      }
-      .map {
-        case (note, majorSecond) =>
-          assert(note.distance(majorSecond) == 2)
-      }
+  test("major second notes are a distance of 1 whole step away") {
+    forAll(PropertyTesting.noteGen) {
+      note =>
+        assert(note.distance(note.major.second) == 2)
+    }
   }
 
   test("major third natural note should work as expected") {
@@ -53,14 +50,10 @@ class MajorTest extends FunSuite {
   }
 
   test("major third notes are a distance of 2 whole steps away") {
-    NoteTesting.naturalNoteSeq ++ NoteTesting.accidentalNoteSeq
-      .map { note =>
-        (note, note.major.third)
-      }
-      .map {
-        case (note, majorThird) =>
-          assert(note.distance(majorThird) == 4)
-      }
+    forAll(PropertyTesting.noteGen) {
+      note =>
+        assert(note.distance(note.major.third) == 4)
+    }
   }
 
   test("major sixth natural note should work as expected") {
@@ -81,14 +74,10 @@ class MajorTest extends FunSuite {
   }
 
   test("major sixth notes are a distance of 9 half steps away") {
-    NoteTesting.naturalNoteSeq ++ NoteTesting.accidentalNoteSeq
-      .map { note =>
-        (note, note.major.sixth)
-      }
-      .map {
-        case (note, majorSixth) =>
-          assert(note.distance(majorSixth) == 9)
-      }
+    forAll(PropertyTesting.noteGen) {
+      note =>
+        assert(note.distance(note.major.sixth) == 9)
+    }
   }
 
   test("major seventh natural note should work as expected") {
@@ -109,13 +98,9 @@ class MajorTest extends FunSuite {
   }
 
   test("major seventh notes are a distance of 11 half steps away") {
-    NoteTesting.naturalNoteSeq ++ NoteTesting.accidentalNoteSeq
-      .map { note =>
-        (note, note.major.seventh)
-      }
-      .map {
-        case (note, majorSixth) =>
-          assert(note.distance(majorSixth) == 11)
-      }
+    forAll(PropertyTesting.noteGen) {
+      note =>
+        assert(note.distance(note.major.seventh) == 11)
+    }
   }
 }

@@ -1,33 +1,28 @@
 package interval.movement.absolute
 
+import helpers.PropertyTesting
 import interval.movement.NHalfSteps
 import note.Note
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import org.scalatest.FunSuite
-
-import scala.util.Random
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 /**
   * Unit tests fot the NHalfStep class
   */
-class NHalfStepTest extends FunSuite {
-  test("A note should be extractable from a NHalfStep") {
-    Note.A.nHalfSteps(3) match {
-      case NHalfSteps(note, interval) => assert(note == Note.A && interval == 3)
-      case _ =>
-        assert(false, "expected half step when calling halfStep() method")
-    }
-  }
-
+class NHalfStepTest extends FunSuite with ScalaCheckPropertyChecks{
   test(
     "NHalfStep should appropriately move a distance of n half steps away from the original note"
   ) {
-    val fuzzer = Random
-    for (_ <- 1 to 10) {
-      val randomDistance = fuzzer.nextInt(10)
-      val alteredNote = Note.A.nHalfSteps(randomDistance)
-
-      assert(alteredNote.down.distance(Note.A) == randomDistance)
-      assert(alteredNote.up.distance(Note.A) == -randomDistance)
+    forAll(PropertyTesting.noteGen) {
+      note =>
+        // Note that NHalfSteps is pretty inefficient, so large arbitrary values are hard to test quickly
+        forAll(Gen.chooseNum(-1000, 1000)) {
+          randomDistance =>
+            assert(note.distance(note.nHalfSteps(randomDistance).up) == randomDistance)
+            assert(note.distance(note.nHalfSteps(randomDistance).down) == -randomDistance)
+        }
     }
   }
 }

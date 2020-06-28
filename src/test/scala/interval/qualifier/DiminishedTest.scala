@@ -1,9 +1,10 @@
 package interval.qualifier
 
-import helpers.NoteTesting
+import helpers.{NoteTesting, PropertyTesting}
 import org.scalatest.FunSuite
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-case class DiminishedTest() extends FunSuite {
+case class DiminishedTest() extends FunSuite with ScalaCheckPropertyChecks {
   test("diminished fourth natural note should work as expected") {
     NoteTesting
       .toNoteTupleSeq(
@@ -22,14 +23,10 @@ case class DiminishedTest() extends FunSuite {
   }
 
   test("diminished fourth notes are a distance of 4 half steps away") {
-    NoteTesting.naturalNoteSeq ++ NoteTesting.accidentalNoteSeq
-      .map { note =>
-        (note, note.diminished.fourth)
-      }
-      .map {
-        case (note, diminishedFourth) =>
-          assert(note.distance(diminishedFourth) == 4)
-      }
+    forAll(PropertyTesting.noteGen) {
+      note =>
+        assert(note.distance(note.diminished.fourth) == 4)
+    }
   }
 
   test("diminished fifth natural note should work as expected") {
@@ -50,14 +47,10 @@ case class DiminishedTest() extends FunSuite {
   }
 
   test("diminished fifth notes are a distance of 6 half steps away") {
-    NoteTesting.naturalNoteSeq ++ NoteTesting.accidentalNoteSeq
-      .map { note =>
-        (note, note.diminished.fifth)
-      }
-      .map {
-        case (note, diminishedFifth) =>
-          assert(note.distance(diminishedFifth) == 6)
-      }
+    forAll(PropertyTesting.noteGen) {
+      note =>
+        assert(note.distance(note.diminished.fifth) == 6)
+    }
   }
 
   test("diminished seventh natural note should work as expected") {
@@ -78,13 +71,9 @@ case class DiminishedTest() extends FunSuite {
   }
 
   test("diminished seventh notes are a distance of 9 half steps away") {
-    NoteTesting.naturalNoteSeq ++ NoteTesting.accidentalNoteSeq
-      .map { note =>
-        (note, note.diminished.seventh)
-      }
-      .map {
-        case (note, diminishedFifth) =>
-          assert(note.distance(diminishedFifth) == 9)
-      }
+    forAll(PropertyTesting.noteGen) {
+      note =>
+        assert(note.distance(note.diminished.seventh) == 9)
+    }
   }
 }
