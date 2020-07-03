@@ -15,7 +15,10 @@ sealed trait Mode extends Scale {}
 abstract class AMode(key: MajorKey, private val rootIndex: Int) extends Mode {
   val notes: List[String] = {
     val originalNotes = key.notes
-    originalNotes.slice(rootIndex, originalNotes.length) ++ originalNotes.slice(0, rootIndex)
+    originalNotes.slice(rootIndex, originalNotes.length) ++ originalNotes.slice(
+      0,
+      rootIndex
+    )
   }
 }
 
