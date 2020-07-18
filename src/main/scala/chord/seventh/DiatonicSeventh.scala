@@ -8,16 +8,17 @@ import note.Note
   * Provides a convenient wrapper for generating a seventh chord from a tonic given a specific key.
   */
 object DiatonicSeventh {
-  def apply(tonic: String)(implicit key: Key): Option[SeventhChord] = for {
-    note <- Note(tonic)
-    _ <- Some(note).filter(n => key.contains(n))
-  } yield {
-    val index = key.notes.indexOf(tonic)
-    key match {
-      case MajorKey(_, _) => majorKeyScaleFunction(index + 1)(tonic)
-      case MinorKey(_, _) => minorKeyScaleFunction(index + 1)(tonic)
+  def apply(tonic: String)(implicit key: Key): Option[SeventhChord] =
+    for {
+      note <- Note(tonic)
+      _ <- Some(note).filter(n => key.contains(n))
+    } yield {
+      val index = key.notes.indexOf(tonic)
+      key match {
+        case MajorKey(_, _) => majorKeyScaleFunction(index + 1)(tonic)
+        case MinorKey(_, _) => minorKeyScaleFunction(index + 1)(tonic)
+      }
     }
-  }
 
   // Indexed by 1 to clarify the scale degrees
   private val majorKeyScaleFunction = Map[Int, String => SeventhChord](
